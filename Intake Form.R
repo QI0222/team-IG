@@ -10,7 +10,10 @@ Scope of the project: The project described below has been approved for what we 
 
 Project description: 
   Based on the information provided during the intake meeting, our understanding of the client project is as follows.
-●	The client wants to know 
+●	The client wants to know how significant is the impact of gender to the level of appreciation of humor. 
+The project data is collected by gathering information from questionnaires, assigned to 700 undergraduate students at Boston University. Two versions of questionnaires are used, with 32 jokes included in "study1", and 3 jokes included in "study2".
+Students are required to rate the level of appreciation. For study1, students will rate the joke on a 1(not funny) to 5(funny) scale...
+
 
 
 Initial milestone:
