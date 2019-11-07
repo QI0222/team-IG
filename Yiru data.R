@@ -58,3 +58,38 @@ partial.correlation.H = cor(residuals.high.H, residuals.Union.H, method = 'spear
 test.statistic.H = partial.correlation.H*sqrt((n-3)/(1-partial.correlation.H^2))
 p.value.H = 2*pt(abs(test.statistic.H), n-3, lower.tail = F)
 
+
+regress.high = lm(Highschool~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living`, data = data)
+regress.Union = lm(`Union density`~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living`, data = data)
+residuals.high = residuals(regress.high)
+residuals.Union = residuals(regress.Union)
+plot(residuals.high,residuals.Union)
+qqplot(qnorm(seq(0,1,length=101),mean(residuals.high), sd(residuals.high)),residuals.high)
+partial.correlation = cor(residuals.high, residuals.Union, method = 'spearman')
+test.statistic = partial.correlation*sqrt((n-3)/(1-partial.correlation^2))
+p.value = 2*pt(abs(test.statistic), n-3, lower.tail = F)
+
+
+regress.high.Urban = lm(Highschool~Urbanity, data = data)
+regress.Union.Urban = lm(`Union density`~Urbanity, data = data)
+residuals.high.Urban = residuals(regress.high.Urban)
+residuals.Union.Urban = residuals(regress.Union.Urban)
+plot(residuals.high.Urban,residuals.Union.Urban)
+qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.Urban), sd(residuals.high.Urban)),residuals.high.Urban)
+partial.correlation.Urban = cor(residuals.high.Urban, residuals.Union.Urban, method = 'spearman')
+test.statistic.Urban = partial.correlation.Urban*sqrt((n-3)/(1-partial.correlation.Urban^2))
+p.value.Urban = 2*pt(abs(test.statistic.Urban), n-3, lower.tail = F)
+
+
+regress.high.Pop = lm(Highschool~Population, data = data)
+regress.Union.Pop = lm(`Union density`~Population, data = data)
+residuals.high.Pop = residuals(regress.high.Pop)
+residuals.Union.Pop = residuals(regress.Union.Pop)
+plot(residuals.high.Pop,residuals.Union.Pop)
+qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.Pop), sd(residuals.high.Pop)),residuals.high.Popn)
+partial.correlation.Pop = cor(residuals.high.Pop, residuals.Union.Pop, method = 'spearman')
+test.statistic.Pop = partial.correlation.Pop*sqrt((n-3)/(1-partial.correlation.Pop^2))
+p.value.Pop = 2*pt(abs(test.statistic.Pop), n-3, lower.tail = F)
+
+ 
+select(data, Gini)
