@@ -160,3 +160,25 @@ tempResids<-data.frame("HS" = residuals(tempHSModel), "union" = residuals(tempUn
 ggplot(tempResids, aes(HS, union)) + geom_point() 
 ggplot(tempResids, aes(HS, union)) + geom_point() + geom_smooth(method = "lm")
 ggplot(tempResids, aes(HS, union)) + geom_point() + geom_smooth(method = "loess")
+
+##KK: also add in racial diversity
+newData<- data %>% mutate(GV=1-White^2-Black^2-Hispanic^2) %>% mutate(norm_GV = GV*(3/2))
+tempModelRacialDiv<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
+                         `Cost of living` + `Union density`+ log(Population) + norm_GV, data = newData)
+summary(tempModelRacialDiv)
+plot(residuals(tempModelRacialDiv))
+
+tempHSModelRacial<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
+                        `Cost of living` + log(Population) + norm_GV, data = newData)
+tempUnionModelRacial<-lm(`Union density`~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
+                           `Cost of living` +  log(Population) + norm_GV, data = newData)
+plot(residuals(tempHSModelRacial), residuals(tempUnionModelRacial))
+
+#there is a leverage point because of the outlier in tempHSModelRacial model: the weird state
+#is OK... there's no real difference that stands out for OK. 
+tempResidsRacial<-data.frame("HS" = residuals(tempHSModelRacial), 
+                             "union" = residuals(tempUnionModelRacial))
+
+ggplot(tempResidsRacial, aes(HS, union)) + geom_point() 
+ggplot(tempResidsRacial, aes(HS, union)) + geom_point() + geom_smooth(method = "lm")
+ggplot(tempResidsRacial, aes(HS, union)) + geom_point() + geom_smooth(method = "loess")
