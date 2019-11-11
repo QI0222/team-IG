@@ -5,14 +5,22 @@ data1<-as_tibble(data1)
 #data transformation: generate a new variable called GV to measure the level of racial diversity
 mydata<-data1 %>% mutate(GV=1-White^2-Black^2-Hispanic^2)
 
-cor.test(mydata$`Union density`,mydata$Highschool)
+##KK: add the normalized GV variable
+mydata<-mydata %>% mutate(norm_GV = GV*(3/2))
+
+#finding the correlation of just the union density and high school variable
+cor.test(mydata$`Union density`, mydata$Highschool)
 #cor.test(mydata$`Union density`,mydata$Highschool,method = c('pearson','kendall','spearman'))
 plot1<-ggplot(mydata)+geom_point(aes(x=mydata$Highschool,y=mydata$`Union density`))+
   geom_smooth(aes(x=mydata$Highschool,y=mydata$`Union density`))
+
+##KK: what is "relationship"? It's not running on my laptop
 plot2<-plot_ly(data=mydata,x=~Highschool,y=~`Union density`, name = `relationship`,
                type='scatter',mode='lines') %>% 
   add_trace(y=~`Union density`,x=~Highschool,mode='lines + markers')
                #line=list(color='rgb(205,12,24)',width=4)
+
+##KK: cleandata is also not found-- is it the one in line 27?
 plot3<-ggplot(cleandata, aes(x=cleandata$Highschool,y=cleandata$`Union density`))+geom_point()+geom_smooth()
 plot2
 plot1
@@ -33,12 +41,14 @@ cleandata<-mydata %>% filter(Highschool<=250000)
 plot3<-ggplot(cleandata, aes(x=cleandata$Highschool,y=cleandata$`Union density`))+geom_point()+geom_smooth()
 plot3
 
+##KK: for this part, I think we're replacing it with CR plots to determine whether variables
+##need to be tranformed
 #preleminary test to check the test assumptions (pearson, kendall ,spearman)
-#- Is the covariation liner? No. Do we have to deal with nonlinear association between the two variables?
+#- Is the covariation linear? No. Do we have to deal with nonlinear association between the two variables?
 #- Are the data from each of the 2 variables follow a normal distribution?
 shapiro.test(mydata$`Union density`)  #is not a normal distribution
 ggpubr::ggqqplot(mydata$`Union density`)
-ggpubr::ggqqplot(mydata$Highscool)
+ggpubr::ggqqplot(mydata$Highschool)
 shapiro.test(mydata$Highschool) #not a normal distribution
 #cor.test(mydata$`Union density`,mydata$Highschool)
 

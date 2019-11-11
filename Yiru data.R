@@ -5,6 +5,11 @@ library(ggplot2)
 library(ppcor)
 
 data = read_excel("Data for the Final Project.xlsx")
+
+##KK: creating initial plots for some EDA to look at how Highschool and Union Density varies with 
+#different proportions of race measures. Note that this does not explain any relationships
+#of racial diversity as the proportion of Blacks/Whites/Hispanic does not represent 
+#racial diversity.
 df= mutate(data, Ratio = Highschool/Population)
 ggplot(df, aes(Black, Highschool)) + geom_point() + geom_smooth()
 ggplot(df, aes(Black, Ratio)) + geom_point() + geom_smooth()
@@ -23,7 +28,9 @@ head(df)
 ggplot(df, aes(`Union density`, Highschool)) + geom_point() + geom_smooth()
 ggplot(df, aes(`Union density`, `Perkins funding`)) + geom_point() + geom_smooth()
 
-data = na.omit(data)
+##KK: you can't just remove the NA because it then removes the whole row of DC. The only
+#NA is for segregation, which we aren't necessarily interested in anyway. 
+# data = na.omit(data)
 
 regress.high.B = lm(Highschool~Black, data = data)
 regress.Union.B = lm(`Union density`~Black, data = data)
@@ -64,12 +71,43 @@ regress.Union = lm(`Union density`~GDP+Gini+Urbanity+Export+`Unemployment rate`+
 residuals.high = residuals(regress.high)
 residuals.Union = residuals(regress.Union)
 plot(residuals.high,residuals.Union)
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high), sd(residuals.high)),residuals.high)
-partial.correlation = cor(residuals.high, residuals.Union, method = 'spearman')
-test.statistic = partial.correlation*sqrt((n-3)/(1-partial.correlation^2))
-p.value = 2*pt(abs(test.statistic), n-3, lower.tail = F)
+residsDf<-data.frame("Highschool_Residuals" = residuals.high, "Union_Residuals" = residuals.Union)
+
+ggplot(residsDf, aes(Highschool_Residuals, Union_Residuals)) + geom_point() +
+  ggtitle("Partial Correlation Plot for Union Density vs. # of Students in Vocational Training Programs") +
+  theme(plot.title = element_text(size=10)) +
+  labs(x = "Residuals for Highschool", y = "Residuals for Union Density")
 
 
+#find the partial correlation
+partial.correlation<-cor(residuals.high, residuals.Union)
+
+##KK: can use either way to plot. The qqplot way uses its true mean, while the qqnorm uses
+#standardized mean and var
+qqnorm(residuals.high)
+qqline(residuals.high)
+qqnorm(residuals.Union)
+qqline(residuals.Union)
+# qqplot(qnorm(seq(0,1,length=101),mean(residuals.high), sd(residuals.high)),residuals.high)
+
+##KK: I think we should be looking at Pearson residuals since Spearman is usually for ordinal data. 
+#However, Spearman measures the monotonic relationship of the two variables and Pearson 
+#measures the linear relationship. Let's look at both and see. 
+
+##KK: However, I looked everywhere online, and I think it should be n-2 instead of n-3
+partial.correlation.spear = cor(residuals.high, residuals.Union, method = 'spearman')
+# test.statistic = partial.correlation*sqrt((n-3)/(1-partial.correlation^2))
+test.statistic.spear = partial.correlation.spear*sqrt((n-2)/(1-partial.correlation.spear^2))
+# p.value = 2*pt(abs(test.statistic), n-3, lower.tail = F)
+p.value.spear = 2*pt(abs(test.statistic.spear), n-2, lower.tail = F)
+
+##KK: added pearson partial correlation plots
+partial.correlation.pear = cor(residuals.high, residuals.Union, method = 'pearson')
+test.statistic.pear = partial.correlation.pear*sqrt((n-2)/(1-partial.correlation.pear^2))
+p.value.pear = 2*pt(abs(test.statistic.pear), n-2, lower.tail = F)
+
+
+#I'm not sure if we need these models
 regress.high.Urban = lm(Highschool~Urbanity, data = data)
 regress.Union.Urban = lm(`Union density`~Urbanity, data = data)
 residuals.high.Urban = residuals(regress.high.Urban)
