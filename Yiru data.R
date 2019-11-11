@@ -65,9 +65,9 @@ partial.correlation.H = cor(residuals.high.H, residuals.Union.H, method = 'spear
 test.statistic.H = partial.correlation.H*sqrt((n-3)/(1-partial.correlation.H^2))
 p.value.H = 2*pt(abs(test.statistic.H), n-3, lower.tail = F)
 
-
-regress.high = lm(Highschool~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living`, data = data)
-regress.Union = lm(`Union density`~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living`, data = data)
+##KK: add Population into the model
+regress.high = lm(Highschool~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living` + Population, data = data)
+regress.Union = lm(`Union density`~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living` + Population, data = data)
 residuals.high = residuals(regress.high)
 residuals.Union = residuals(regress.Union)
 plot(residuals.high,residuals.Union)
@@ -76,8 +76,14 @@ residsDf<-data.frame("Highschool_Residuals" = residuals.high, "Union_Residuals" 
 ggplot(residsDf, aes(Highschool_Residuals, Union_Residuals)) + geom_point() +
   ggtitle("Partial Correlation Plot for Union Density vs. # of Students in Vocational Training Programs") +
   theme(plot.title = element_text(size=10)) +
-  labs(x = "Residuals for Highschool", y = "Residuals for Union Density")
+  labs(x = "Residuals for Highschool", y = "Residuals for Union Density") + 
+  geom_smooth(method = "lm")
 
+ggplot(residsDf, aes(Highschool_Residuals, Union_Residuals)) + geom_point() +
+  ggtitle("Partial Correlation Plot for Union Density vs. # of Students in Vocational Training Programs") +
+  theme(plot.title = element_text(size=10)) +
+  labs(x = "Residuals for Highschool", y = "Residuals for Union Density") + 
+  geom_smooth(method = "loess")
 
 #find the partial correlation
 partial.correlation<-cor(residuals.high, residuals.Union)
@@ -131,3 +137,26 @@ p.value.Pop = 2*pt(abs(test.statistic.Pop), n-3, lower.tail = F)
 
  
 select(data, Gini)
+
+##KK: looking at the CR plots and determining which variables to transform
+tempModelOriginal<-lm(Highschool~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living` + `Union density`+ Population, data = data)
+crPlots(tempModelOriginal)
+
+tempModel<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
+                `Cost of living` + `Union density`+ log(Population), data = data)
+crPlots(tempModel)
+summary(tempModel)
+plot(residuals(tempModel))
+abline(h = 0)
+
+##KK: look at the partial correlation plot 
+tempHSModel<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
+                  `Cost of living` + log(Population), data = data)
+tempUnionModel<-lm(`Union density`~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
+                     `Cost of living` +  log(Population), data = data)
+plot(residuals(tempHSModel), residuals(tempUnionModel))
+tempResids<-data.frame("HS" = residuals(tempHSModel), "union" = residuals(tempUnionModel))
+
+ggplot(tempResids, aes(HS, union)) + geom_point() 
+ggplot(tempResids, aes(HS, union)) + geom_point() + geom_smooth(method = "lm")
+ggplot(tempResids, aes(HS, union)) + geom_point() + geom_smooth(method = "loess")
