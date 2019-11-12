@@ -103,13 +103,6 @@ plot(fit2,which=2)
 plot(fit2,which=3)
 ```
 
-
-
-
-
-
-
-
 #Racial Diversity
 ```{r}
 fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini+norm_Racial_diversity,data = data3)
