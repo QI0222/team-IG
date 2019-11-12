@@ -11,7 +11,7 @@ pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,me
 
 #Loading Data, Data Cleaning
 ```{r}
-data<-read_excel("~/Desktop/Consulting/Songhyun/Data for the Final Project.xlsx")
+data<-read_excel("Data for the Final Project.xlsx")
 data<-as_tibble(data)
 #select variables that needed for the project and rename some variables
 data2 <- data %>% 
@@ -57,10 +57,12 @@ plot(residuals.high,residuals.Union)
 abline(lm(residuals.Union~residuals.high), col="red")
 qqplot(qnorm(seq(0,1,length=101),mean(residuals.high), sd(residuals.high)),residuals.high)
 partial.correlation = cor(residuals.high, residuals.Union, method = 'spearman')
+partial.correlation
 test.statistic = partial.correlation*sqrt((n-3)/(1-partial.correlation^2))
 p.value = 2*pt(abs(test.statistic), n-3, lower.tail = F)
+p.value
 a= lm(residuals.Union~residuals.high)
-plot(a)
+plot(a,which=2)
 ```
 
 #Improve the model by transformation
@@ -70,15 +72,6 @@ summary(fit1)
 crPlots(fit1)
 plot(fit1,which=2)
 plot(fit1,which=3)
-
-#remove the highest value in GDP and refit
-data4 <-data3 %>% 
-  filter(GDP<100000)
-fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini,data = data4)
-summary(fit2)
-crPlots(fit2)
-plot(fit2,which=2)
-plot(fit2,which=3)
 ```
 
 #Partial correlation test on transformation model
@@ -92,10 +85,30 @@ abline(lm(residuals.Union.t~residuals.high.t), col="red")
 qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.t), sd(residuals.high.t)),residuals.high.t)
 partial.correlation.t = cor(residuals.high.t, residuals.Union.t, method = 'spearman')
 test.statistic.t = partial.correlation.t*sqrt((n-3)/(1-partial.correlation.t^2))
+partial.correlation.t
 p.value.t = 2*pt(abs(test.statistic.t), n-3, lower.tail = F)
+p.value.t
 b = lm(residuals.Union.t~residuals.high.t)
-plot(b)
+plot(b,which=2)
 ```
+
+#Trying to remove the highest value in GDP and refit
+```{r}
+data4 <-data3 %>% 
+  filter(GDP<100000)
+fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini,data = data4)
+summary(fit2)
+crPlots(fit2)
+plot(fit2,which=2)
+plot(fit2,which=3)
+```
+
+
+
+
+
+
+
 
 #Racial Diversity
 ```{r}
@@ -110,195 +123,6 @@ randomtest <- rnorm(length(cleandata$Highschool),mean =mean(cleandata$`Union den
 xtest <- cleandata$Highschool
 summary(lm(randomtest~xtest))
 ggplot()+aes(x = xtest,y = randomtest)+geom_point()+geom_smooth(method = "lm")
-```
-
-
-#Yiru's, needs more discussion
-```{r,eval=FALSE}
-library(readxl)
-library(dplyr)
-library(corrplot)
-library(ggplot2)
-library(ppcor)
-
-data = read_excel("Data for the Final Project.xlsx")
-
-##KK: creating initial plots for some EDA to look at how Highschool and Union Density varies with 
-#different proportions of race measures. Note that this does not explain any relationships
-#of racial diversity as the proportion of Blacks/Whites/Hispanic does not represent 
-#racial diversity.
-df= mutate(data, Ratio = Highschool/Population)
-ggplot(df, aes(Black, Highschool)) + geom_point() + geom_smooth()
-ggplot(df, aes(Black, Ratio)) + geom_point() + geom_smooth()
-ggplot(df, aes(Black, `Perkins funding`)) + geom_point() + geom_smooth()
-
-ggplot(df, aes(Hispanic, Highschool)) + geom_point() + geom_smooth()
-ggplot(df, aes(Hispanic, Ratio)) + geom_point() + geom_smooth()
-ggplot(df, aes(Hispanic, `Perkins funding`)) + geom_point() + geom_smooth()
-
-ggplot(df, aes(White, Highschool)) + geom_point() + geom_smooth()
-ggplot(df, aes(White, Ratio)) + geom_point() + geom_smooth()
-ggplot(df, aes(White, `Perkins funding`)) + geom_point() + geom_smooth()
-
-head(df)
-
-ggplot(df, aes(`Union density`, Highschool)) + geom_point() + geom_smooth()
-ggplot(df, aes(`Union density`, `Perkins funding`)) + geom_point() + geom_smooth()
-
-##KK: you can't just remove the NA because it then removes the whole row of DC. The only
-#NA is for segregation, which we aren't necessarily interested in anyway. 
-# data = na.omit(data)
-
-regress.high.B = lm(Highschool~Black, data = data)
-regress.Union.B = lm(`Union density`~Black, data = data)
-residuals.high.B = residuals(regress.high.B)
-residuals.Union.B = residuals(regress.Union.B)
-plot(residuals.high.B,residuals.Union.B)
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.B), sd(residuals.high.B)),residuals.high.B)
-partial.correlation.B = cor(residuals.high.B, residuals.Union.B, method = 'spearman')
-n = length(data$Highschool)
-test.statistic.B = partial.correlation.B*sqrt((n-3)/(1-partial.correlation.B^2))
-p.value.B = 2*pt(abs(test.statistic.B), n-3, lower.tail = F)
-
-
-regress.high.W = lm(Highschool~White, data = data)
-regress.Union.W = lm(`Union density`~White, data = data)
-residuals.high.W = residuals(regress.high.W)
-residuals.Union.W = residuals(regress.Union.W)
-plot(residuals.high.W,residuals.Union.W)
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.W), sd(residuals.high.W)),residuals.high.W)
-partial.correlation.W = cor(residuals.high.W, residuals.Union.W, method = 'spearman')
-test.statistic.W = partial.correlation.W*sqrt((n-3)/(1-partial.correlation.W^2))
-p.value.W = 2*pt(abs(test.statistic.W), n-3, lower.tail = F)
-
-
-regress.high.H = lm(Highschool~Hispanic, data = data)
-regress.Union.H = lm(`Union density`~Hispanic, data = data)
-residuals.high.H = residuals(regress.high.H)
-residuals.Union.H = residuals(regress.Union.H)
-plot(residuals.high.H,residuals.Union.H)
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.H), sd(residuals.high.H)),residuals.high.H)
-partial.correlation.H = cor(residuals.high.H, residuals.Union.H, method = 'spearman')
-test.statistic.H = partial.correlation.H*sqrt((n-3)/(1-partial.correlation.H^2))
-p.value.H = 2*pt(abs(test.statistic.H), n-3, lower.tail = F)
-
-##KK: add Population into the model
-regress.high = lm(Highschool~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living` + Population, data = data)
-regress.Union = lm(`Union density`~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living` + Population, data = data)
-residuals.high = residuals(regress.high)
-residuals.Union = residuals(regress.Union)
-plot(residuals.high,residuals.Union)
-residsDf<-data.frame("Highschool_Residuals" = residuals.high, "Union_Residuals" = residuals.Union)
-
-ggplot(residsDf, aes(Highschool_Residuals, Union_Residuals)) + geom_point() +
-  ggtitle("Partial Correlation Plot for Union Density vs. # of Students in Vocational Training Programs") +
-  theme(plot.title = element_text(size=10)) +
-  labs(x = "Residuals for Highschool", y = "Residuals for Union Density") + 
-  geom_smooth(method = "lm")
-
-ggplot(residsDf, aes(Highschool_Residuals, Union_Residuals)) + geom_point() +
-  ggtitle("Partial Correlation Plot for Union Density vs. # of Students in Vocational Training Programs") +
-  theme(plot.title = element_text(size=10)) +
-  labs(x = "Residuals for Highschool", y = "Residuals for Union Density") + 
-  geom_smooth(method = "loess")
-
-#find the partial correlation
-partial.correlation<-cor(residuals.high, residuals.Union)
-
-##KK: can use either way to plot. The qqplot way uses its true mean, while the qqnorm uses
-#standardized mean and var
-qqnorm(residuals.high)
-qqline(residuals.high)
-qqnorm(residuals.Union)
-qqline(residuals.Union)
-# qqplot(qnorm(seq(0,1,length=101),mean(residuals.high), sd(residuals.high)),residuals.high)
-
-##KK: I think we should be looking at Pearson residuals since Spearman is usually for ordinal data. 
-#However, Spearman measures the monotonic relationship of the two variables and Pearson 
-#measures the linear relationship. Let's look at both and see. 
-
-##KK: However, I looked everywhere online, and I think it should be n-2 instead of n-3
-partial.correlation.spear = cor(residuals.high, residuals.Union, method = 'spearman')
-# test.statistic = partial.correlation*sqrt((n-3)/(1-partial.correlation^2))
-test.statistic.spear = partial.correlation.spear*sqrt((n-2)/(1-partial.correlation.spear^2))
-# p.value = 2*pt(abs(test.statistic), n-3, lower.tail = F)
-p.value.spear = 2*pt(abs(test.statistic.spear), n-2, lower.tail = F)
-
-##KK: added pearson partial correlation plots
-partial.correlation.pear = cor(residuals.high, residuals.Union, method = 'pearson')
-test.statistic.pear = partial.correlation.pear*sqrt((n-2)/(1-partial.correlation.pear^2))
-p.value.pear = 2*pt(abs(test.statistic.pear), n-2, lower.tail = F)
-
-
-#I'm not sure if we need these models
-regress.high.Urban = lm(Highschool~Urbanity, data = data)
-regress.Union.Urban = lm(`Union density`~Urbanity, data = data)
-residuals.high.Urban = residuals(regress.high.Urban)
-residuals.Union.Urban = residuals(regress.Union.Urban)
-plot(residuals.high.Urban,residuals.Union.Urban)
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.Urban), sd(residuals.high.Urban)),residuals.high.Urban)
-partial.correlation.Urban = cor(residuals.high.Urban, residuals.Union.Urban, method = 'spearman')
-test.statistic.Urban = partial.correlation.Urban*sqrt((n-3)/(1-partial.correlation.Urban^2))
-p.value.Urban = 2*pt(abs(test.statistic.Urban), n-3, lower.tail = F)
-
-
-regress.high.Pop = lm(Highschool~Population, data = data)
-regress.Union.Pop = lm(`Union density`~Population, data = data)
-residuals.high.Pop = residuals(regress.high.Pop)
-residuals.Union.Pop = residuals(regress.Union.Pop)
-plot(residuals.high.Pop,residuals.Union.Pop)
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.Pop), sd(residuals.high.Pop)),residuals.high.Popn)
-partial.correlation.Pop = cor(residuals.high.Pop, residuals.Union.Pop, method = 'spearman')
-test.statistic.Pop = partial.correlation.Pop*sqrt((n-3)/(1-partial.correlation.Pop^2))
-p.value.Pop = 2*pt(abs(test.statistic.Pop), n-3, lower.tail = F)
-
- 
-select(data, Gini)
-
-##KK: looking at the CR plots and determining which variables to transform
-tempModelOriginal<-lm(Highschool~GDP+Gini+Urbanity+Export+`Unemployment rate`+`Cost of living` + `Union density`+ Population, data = data)
-crPlots(tempModelOriginal)
-
-tempModel<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
-                `Cost of living` + `Union density`+ log(Population), data = data)
-crPlots(tempModel)
-summary(tempModel)
-plot(residuals(tempModel))
-abline(h = 0)
-
-##KK: look at the partial correlation plot 
-tempHSModel<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
-                  `Cost of living` + log(Population), data = data)
-tempUnionModel<-lm(`Union density`~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
-                     `Cost of living` +  log(Population), data = data)
-plot(residuals(tempHSModel), residuals(tempUnionModel))
-tempResids<-data.frame("HS" = residuals(tempHSModel), "union" = residuals(tempUnionModel))
-
-ggplot(tempResids, aes(HS, union)) + geom_point() 
-ggplot(tempResids, aes(HS, union)) + geom_point() + geom_smooth(method = "lm")
-ggplot(tempResids, aes(HS, union)) + geom_point() + geom_smooth(method = "loess")
-
-##KK: also add in racial diversity
-newData<- data %>% mutate(GV=1-White^2-Black^2-Hispanic^2) %>% mutate(norm_GV = GV*(3/2))
-tempModelRacialDiv<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
-                         `Cost of living` + `Union density`+ log(Population) + norm_GV, data = newData)
-summary(tempModelRacialDiv)
-plot(residuals(tempModelRacialDiv))
-
-tempHSModelRacial<-lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
-                        `Cost of living` + log(Population) + norm_GV, data = newData)
-tempUnionModelRacial<-lm(`Union density`~log(GDP)+Gini+Urbanity+log(Export)+`Unemployment rate`+
-                           `Cost of living` +  log(Population) + norm_GV, data = newData)
-plot(residuals(tempHSModelRacial), residuals(tempUnionModelRacial))
-
-#there is a leverage point because of the outlier in tempHSModelRacial model: the weird state
-#is OK... there's no real difference that stands out for OK. 
-tempResidsRacial<-data.frame("HS" = residuals(tempHSModelRacial), 
-                             "union" = residuals(tempUnionModelRacial))
-
-ggplot(tempResidsRacial, aes(HS, union)) + geom_point() 
-ggplot(tempResidsRacial, aes(HS, union)) + geom_point() + geom_smooth(method = "lm")
-ggplot(tempResidsRacial, aes(HS, union)) + geom_point() + geom_smooth(method = "loess")
 ```
 
 #Shicheng's，needs more discussion
@@ -422,12 +246,4 @@ plot(sens.cont,sens.par="rho")
 #The grey region represents the 95% confidence bands.
 plot(sens.cont,sens.par = "R2",r.type="total",sign.prod = "negative")
 ```
-
-
-
-
-
-
-
-
 
