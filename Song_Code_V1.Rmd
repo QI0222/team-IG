@@ -68,7 +68,7 @@ plot(a,which=2)
 
 #Improve the model by transformation
 ```{r}
-fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini,data = data3)
+fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data3)
 summary(fit1)
 crPlots(fit1)
 plot(fit1,which=2)
