@@ -838,6 +838,44 @@ fit3 &lt;- lm(Highschool ~ uniondensity+ GDP+Urbanity+log(scale(Population^1/2))
 crPlots(fit1)
 crPlots(fit2)
 crPlots(fit3)</code></pre>
+<p>#mediation analysis</p>
+<pre class="r"><code>##mediation analysis
+pacman::p_load(mediation,quantreg)
+data(&quot;jobs&quot;)
+model.m&lt;-lm(job_seek~treat+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,data=jobs)
+model.y&lt;-lm(depress2~treat+job_seek+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,data=jobs)
+out.1&lt;-mediate(model.m,model.y,sims=1000,boot=TRUE,treat = &quot;treat&quot;,mediator=&quot;job_seek&quot;)
+out.2&lt;-mediate(model.m,model.y,sims=1000,treat = &quot;treat&quot;,mediator=&quot;job_seek&quot;)
+summary(out.2)
+#In this case, we find that job search self-efficacy mediated the effect of the treatment on depression in the negative direction.
+#This effect, however, was small with a point estimate of -0.014 and the 95% confidence interval barely covers 0.
+plot(out.2)
+model.y&lt;-lm(depress2~treat+job_seek+treat:job_seek+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,data=jobs)
+out.3&lt;-mediate(model.m,model.y,sims=1000,treat=&quot;treat&quot;,mediator = &quot;job_seek&quot;)
+summary(out.3) #how to illustrate the result?
+plot(out.3,treatment=&quot;both&quot;)
+model.m&lt;-lm(job_seek~treat+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,data=jobs)
+model.y&lt;-rq(depress2~treat+job_seek+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,data=jobs)
+out.6&lt;-mediate(model.m,model.y,sims=1000,boot=TRUE,treat=&quot;treat&quot;,mediator=&quot;job_seek&quot;)
+summary(out.6)
+
+#Discrete Mediator and Outcome Data
+model.m&lt;-lm(job_seek~treat+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,data=jobs)
+model.y&lt;-glm(work1~treat+job_seek+depress1+econ_hard+sex+age+occp+marital+nonwhite+educ+income,
+             family=binomial(link=&quot;probit&quot;),data=jobs)
+out.7&lt;-mediate(model.m,model.y,sims=1000,treat=&quot;treat&quot;,mediator=&quot;job_seek&quot;)
+summary(out.7)
+
+#Sensitivity analysis
+sens.cont&lt;-medsens(out.7,rho.by=0.05)
+summary(sens.cont)
+#R^2_M*R^2_Y is the product of coeeficients of determination which represents the proportion of the previously unexplained variance in the
+#mediator and and outcome variabls that is explained by an unobservable pretreatment unconfounder.
+plot(sens.cont,sens.par=&quot;rho&quot;)
+#the dashed horizontal line represents the estimated mediation effect under the sequential ignorability assumption,
+#and the solid line represents the mediation effect under various values of p. 
+#The grey region represents the 95% confidence bands.
+plot(sens.cont,sens.par = &quot;R2&quot;,r.type=&quot;total&quot;,sign.prod = &quot;negative&quot;)</code></pre>
 
 
 
