@@ -55,15 +55,18 @@ residuals.high = residuals(regress.high)
 residuals.Union = residuals(regress.Union)
 plot(residuals.high,residuals.Union)
 abline(lm(residuals.Union~residuals.high), col="red")
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high), sd(residuals.high)),residuals.high)
-partial.correlation = cor(residuals.high, residuals.Union, method = 'pearson')
-partial.correlation = cor(residuals.high, residuals.Union, method = 'pearson')
-partial.correlation
-test.statistic = partial.correlation*sqrt((n-3)/(1-partial.correlation^2))
-p.value = 2*pt(abs(test.statistic), n-3, lower.tail = F)
-p.value
-a= lm(residuals.Union~residuals.high)
-plot(a,which=2)
+
+partial.correlation_s = cor(residuals.high, residuals.Union, method = 'spearman')
+partial.correlation_s
+test.statistic_s = partial.correlation_s*sqrt((n-3)/(1-partial.correlation_s^2))
+p.value_s = 2*pt(abs(test.statistic_s), n-3, lower.tail = F)
+p.value_s
+
+partial.correlation_p = cor(residuals.high, residuals.Union, method = 'pearson')
+partial.correlation_p
+test.statistic_p = partial.correlation_p*sqrt((n-3)/(1-partial.correlation_p^2))
+p.value_p = 2*pt(abs(test.statistic_p), n-3, lower.tail = F)
+p.value_p
 ```
 
 #Improve the model by transformation
@@ -77,21 +80,24 @@ plot(fit1,which=3)
 
 #Partial correlation test on transformation model
 ```{r}
-regress.high.t = lm(log(Highschool)~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini, data = data3)
-regress.Union.t = lm(Union_density~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini, data = data3)
+regress.high.t = lm(log(Highschool)~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini, data = data3)
+regress.Union.t = lm(Union_density~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini, data = data3)
 residuals.high.t = residuals(regress.high.t)
 residuals.Union.t = residuals(regress.Union.t)
 plot(residuals.high.t,residuals.Union.t)
 abline(lm(residuals.Union.t~residuals.high.t), col="red")
-qqplot(qnorm(seq(0,1,length=101),mean(residuals.high.t), sd(residuals.high.t)),residuals.high.t)
-partial.correlation.t = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
-partial.correlation.t = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
-test.statistic.t = partial.correlation.t*sqrt((n-3)/(1-partial.correlation.t^2))
-partial.correlation.t
-p.value.t = 2*pt(abs(test.statistic.t), n-3, lower.tail = F)
-p.value.t
-b = lm(residuals.Union.t~residuals.high.t)
-plot(b,which=2)
+
+partial.correlation.t_s = cor(residuals.high.t, residuals.Union.t, method = 'spearman')
+partial.correlation.t_s
+test.statistic.t_s = partial.correlation.t_s*sqrt((n-3)/(1-partial.correlation.t_s^2))
+p.value.t_s = 2*pt(abs(test.statistic.t_s), n-3, lower.tail = F)
+p.value.t_s
+
+partial.correlation.t_p = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
+partial.correlation.t_p
+test.statistic.t_p = partial.correlation.t_p*sqrt((n-3)/(1-partial.correlation.t_p^2))
+p.value.t_p = 2*pt(abs(test.statistic.t_p), n-3, lower.tail = F)
+p.value.t_p
 ```
 
 #Trying to remove the highest value in GDP and refit
@@ -107,8 +113,24 @@ plot(fit2,which=3)
 
 #Racial Diversity
 ```{r}
-fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini+norm_Racial_diversity,data = data3)
+fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini+norm_Racial_diversity,data = data3)
 summary(fit3)
+```
+#Partial correlation test on Racial Diversity model
+```{r}
+regress.high.f = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data)
+regress.Union.f = lm(`Union density`~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data)
+residuals.high.f = residuals(regress.high.f)
+residuals.Union.f = residuals(regress.Union.f)
+plot(residuals.high.f,residuals.Union.f)
+abline(lm(residuals.Union.f~residuals.high.f), col="red")
+partial.correlation.f_s = cor(residuals.high.f, residuals.Union.f, method = 'spearman')
+test.statistic.f_s = partial.correlation.f_s*sqrt((n-3)/(1-partial.correlation.f_s^2))
+p.value.f_s = 2*pt(abs(test.statistic.f_s), n-3, lower.tail = F)
+
+partial.correlation.f_p = cor(residuals.high.f, residuals.Union.f, method = 'pearson')
+test.statistic.f_p = partial.correlation.t_p*sqrt((n-3)/(1-partial.correlation.f_p^2))
+p.value.f_p = 2*pt(abs(test.statistic.f_p), n-3, lower.tail = F)
 ```
 
 #others,needs more discussion
