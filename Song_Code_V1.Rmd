@@ -32,6 +32,14 @@ plot1 <-  ggplot(data3)+
   geom_smooth(aes(x=data3$Highschool,y=data3$Union_density),se=FALSE)+
   labs(x="Union Density",y="Highschool")
 plot1
+
+car::spm(~Union_density+Highschool, data = data3,  
+         smooth=list(lty.smooth=2,lwd.smooth = 3, col.smooth="red", spread = T, lty.spread=3, lwd.spread=2),  
+         diagonal = list(method="density"), regLine=list(method =lm,lty=1,lwd=2,col="blue"), 
+         cex = 1, cex.labels = 1.5, cex.axis = 1.5, 
+         pch = c(16,16,16), col = c("red", "green3", "blue"), row1attop = T ) 
+
+symbols(data3$Union_density,data3$Highschool,circles= data3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Highschool")
 ```
 
 #replicate the model
@@ -134,38 +142,6 @@ test.statistic.f_p = partial.correlation.t_p*sqrt((n-3)/(1-partial.correlation.f
 p.value.f_p = 2*pt(abs(test.statistic.f_p), n-3, lower.tail = F)
 ```
 
-
-```{r}
-
-###
-da <- read.csv("Data for the Final Project.csv")
-data <- da[1:51,1:31]
-new<-dplyr::select(data,1,3,5:11,22,23,27:29)
-###
-new$GDP<-as.numeric(new$GDP)
-new$Gini<-as.numeric(new$Gini)
-new$Urbanity<-as.numeric(new$Urbanity)
-new$Population<-as.numeric(new$Population)
-new$Export<-as.numeric(new$Export)
-new$Unemployment.rate<-as.numeric(new$Unemployment.rate)
-new$Highschool<-as.numeric(new$Highschool)
-new$Union.density<-as.numeric(new$Union.density)
-new$ratio<-as.numeric(new$Highschool)/as.numeric(new$Population)
-###
-symbols(new$Union.density,new$Highschool,circles = new$White/pi,inches=0.30, fg="white", bg="lightblue") 
-###
-car::spm(~Union.density+Highschool, data = new,  
-         smooth=list(lty.smooth=2,lwd.smooth = 3, col.smooth="red", spread = T, lty.spread=3, lwd.spread=2),  
-         diagonal = list(method="density"), regLine=list(method =lm,lty=1,lwd=2,col="blue"), 
-         cex = 1, cex.labels = 1.5, cex.axis = 1.5, 
-         pch = c(16,16,16), col = c("red", "green3", "blue"), row1attop = T ) 
-###
-s3d<-scatterplot3d(new$Union.density,new$White,new$Highschool, pch=16, highlight.3d=TRUE,type="h") 
-f <- lm(Highschool~Union.density+White) 
-s3d$plane3d(f,lty.box = "solid")
-```
-
-
 #others,needs more discussion
 ```{r,eval=FALSE}
 #It looks like there is a weak negative relationship, but how much confident can we deliver that message?
@@ -175,13 +151,7 @@ summary(lm(randomtest~xtest))
 ggplot()+aes(x = xtest,y = randomtest)+geom_point()+geom_smooth(method = "lm")
 ```
 
-
-
-
-
-
-
-#mediation analysis
+#mediation analysis,needs more discussion
 ```{r,eval=FALSE}
 ##mediation analysis
 pacman::p_load(mediation,quantreg)
