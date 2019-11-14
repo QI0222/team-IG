@@ -46,6 +46,8 @@ symbols(data3$Union_density,data3$Highschool,circles= data3$norm_Racial_diversit
 ```{r}
 fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = data3)
 summary(fittest)
+#check linearity assumption
+plot(fittest,which=1)
 #check normality assumption
 plot(fittest,which=2)
 #check constant variance assumption
@@ -82,6 +84,7 @@ p.value_p
 fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data3)
 summary(fit1)
 crPlots(fit1)
+plot(fit1,which=1)
 plot(fit1,which=2)
 plot(fit1,which=3)
 ```
@@ -115,6 +118,7 @@ data4 <-data3 %>%
 fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini,data = data4)
 summary(fit2)
 crPlots(fit2)
+plot(fit2,which=1)
 plot(fit2,which=2)
 plot(fit2,which=3)
 ```
