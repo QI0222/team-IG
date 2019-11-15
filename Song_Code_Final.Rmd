@@ -1,0 +1,141 @@
+---
+title: "Song's Project"
+author: "Team IG"
+date: "11/11/2019"
+output: html_document
+---
+
+```{r}
+pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,mediation,geepack,conf,car,knitr,gclus,scatterplot3d, ppcor)
+```
+
+#Loading Data, Data Cleaning
+```{r}
+data<-read_excel("Data for the Final Project.xlsx")
+data<-as_tibble(data)
+#select variables that needed for the project and rename some variables
+data2 <- data %>% 
+  dplyr::select(State,Highschool,`Union density`,GDP,Urbanity, Population, Export,`Unemployment rate`,`Cost of living`,Gini, White, Black, Hispanic)
+names(data2)[3]<-"Union_density"
+names(data2)[8]<-"Unemployment_rate"
+names(data2)[9]<-"Cost_of_living"
+#data transformation: generate a new variable called GV to measure the level of racial diversity
+data3 <- data2 %>% 
+  mutate(Racial_diversity=1-White^2-Black^2-Hispanic^2) %>%
+  mutate(norm_Racial_diversity = Racial_diversity*(3/2))
+```
+
+#EDA
+```{r}
+plot1 <-  ggplot(data3)+
+  geom_point(aes(x=data3$Highschool,y=data3$Union_density))+
+  geom_smooth(aes(x=data3$Highschool,y=data3$Union_density),se=FALSE)+
+  labs(x="Union Density",y="Highschool")
+plot1
+
+symbols(data3$Highschool,data3$Union_density,circles= data3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Highschool")
+```
+
+#replicate the model
+```{r}
+fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = data3)
+summary(fittest)
+#check linearity assumption
+plot(fittest,which=1)
+#check normality assumption
+plot(fittest,which=2)
+#check constant variance assumption
+plot(fittest,which=3)
+#check the component residual plot(also called partial residual plot)
+crPlots(fittest)
+```
+
+#partial correlation test on original model
+```{r}
+n = length(data3$Highschool)
+regress.high = lm(Highschool ~ GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini, data = data3)
+regress.Union = lm(Union_density ~ GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini, data = data3)
+residuals.high = residuals(regress.high)
+residuals.Union = residuals(regress.Union)
+plot(residuals.high,residuals.Union,main = "Partial Correlation for First Model")
+abline(lm(residuals.Union~residuals.high), col="red")
+
+partial.correlation_s = cor(residuals.high, residuals.Union, method = 'spearman')
+partial.correlation_s
+test.statistic_s = partial.correlation_s*sqrt((n-3)/(1-partial.correlation_s^2))
+p.value_s = 2*pt(abs(test.statistic_s), n-3, lower.tail = F)
+p.value_s
+
+partial.correlation_p = cor(residuals.high, residuals.Union, method = 'pearson')
+partial.correlation_p
+test.statistic_p = partial.correlation_p*sqrt((n-2)/(1-partial.correlation_p^2))
+p.value_p = 2*pt(abs(test.statistic_p), n-2, lower.tail = F)
+p.value_p
+```
+
+#Improve the model by transformation
+```{r}
+fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data3)
+summary(fit1)
+crPlots(fit1)
+plot(fit1,which=1)
+plot(fit1,which=2)
+plot(fit1,which=3)
+```
+
+#Partial correlation test on transformation model
+```{r}
+regress.high.t = lm(log(Highschool)~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini, data = data3)
+regress.Union.t = lm(Union_density~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini, data = data3)
+residuals.high.t = residuals(regress.high.t)
+residuals.Union.t = residuals(regress.Union.t)
+plot(residuals.high.t,residuals.Union.t,main = "Partial Correlation for Second Model")
+abline(lm(residuals.Union.t~residuals.high.t), col="red")
+
+partial.correlation.t_s = cor(residuals.high.t, residuals.Union.t, method = 'spearman')
+partial.correlation.t_s
+test.statistic.t_s = partial.correlation.t_s*sqrt((n-2)/(1-partial.correlation.t_s^2))
+p.value.t_s = 2*pt(abs(test.statistic.t_s), n-2, lower.tail = F)
+p.value.t_s
+
+partial.correlation.t_p = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
+partial.correlation.t_p
+test.statistic.t_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.t_p^2))
+p.value.t_p = 2*pt(abs(test.statistic.t_p), n-2, lower.tail = F)
+p.value.t_p
+```
+
+#Trying to remove the highest value in GDP and refit
+```{r}
+data4 <-data3 %>% 
+  filter(GDP<100000)
+fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini,data = data4)
+summary(fit2)
+crPlots(fit2)
+plot(fit2,which=1)
+plot(fit2,which=2)
+plot(fit2,which=3)
+```
+
+#Racial Diversity
+```{r}
+fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini+norm_Racial_diversity,data = data3)
+summary(fit3)
+```
+
+#Partial correlation test on Racial Diversity model
+```{r}
+regress.high.f = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data3)
+regress.Union.f = lm(Union_density~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data3)
+residuals.high.f = residuals(regress.high.f)
+residuals.Union.f = residuals(regress.Union.f)
+plot(residuals.high.f,residuals.Union.f,main = "Partial Correlation for Final Model")
+abline(lm(residuals.Union.f~residuals.high.f), col="red")
+partial.correlation.f_s = cor(residuals.high.f, residuals.Union.f, method = 'spearman')
+test.statistic.f_s = partial.correlation.f_s*sqrt((n-2)/(1-partial.correlation.f_s^2))
+p.value.f_s = 2*pt(abs(test.statistic.f_s), n-2, lower.tail = F)
+
+partial.correlation.f_p = cor(residuals.high.f, residuals.Union.f, method = 'pearson')
+test.statistic.f_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.f_p^2))
+p.value.f_p = 2*pt(abs(test.statistic.f_p), n-2, lower.tail = F)
+```
