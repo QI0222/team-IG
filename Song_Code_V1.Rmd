@@ -33,13 +33,7 @@ plot1 <-  ggplot(data3)+
   labs(x="Union Density",y="Highschool")
 plot1
 
-car::spm(~Union_density+Highschool, data = data3,  
-         smooth=list(lty.smooth=2,lwd.smooth = 3, col.smooth="red", spread = T, lty.spread=3, lwd.spread=2),  
-         diagonal = list(method="density"), regLine=list(method =lm,lty=1,lwd=2,col="blue"), 
-         cex = 1, cex.labels = 1.5, cex.axis = 1.5, 
-         pch = c(16,16,16), col = c("red", "green3", "blue"), row1attop = T ) 
-
-symbols(data3$Union_density,data3$Highschool,circles= data3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Highschool")
+symbols(data3$Highschool,data3$Union_density,circles= data3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Highschool")
 ```
 
 #replicate the model
