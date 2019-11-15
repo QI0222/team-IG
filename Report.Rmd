@@ -11,14 +11,32 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 # Introduction
+- Briefly explain the VOC
+- Research question
+- Literature review
+- Dataset interpretation
+- Briefly introduce the methodology that we are going to use
+
+# Data Check
+- Consistent data might be helpful for analysis 
+- Might consider more representative variabels
 
 # Exploratory Data Analysis
+- Not a distinguish negative coefficient between vocational training and union density
 
 # Methodology and Result
 
 ### Replicate Original Model
+- Get the same coefficient
+- Model validation
 
 ### Transformation
+- Use CrPlots to determin which variable to take log transformation
+- Model validation
+
+### Partial Correlation
+
+### Mediation Analysis
 
 # Conclusion
 
