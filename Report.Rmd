@@ -30,9 +30,13 @@ knitr::opts_chunk$set(echo = TRUE)
 - Get the same coefficient
 - Model validation
 
-### Transformation
+### Transformation: Adjusted Model1
 - Use CrPlots to determin which variable to take log transformation
 - Model validation
+
+### Sensitivity Analaysis
+
+### Adding racial diveristy: Adjusted Model2
 
 ### Partial Correlation
 
