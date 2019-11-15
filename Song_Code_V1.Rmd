@@ -63,7 +63,7 @@ regress.high = lm(Highschool ~ GDP+Urbanity+Population+Export+Unemployment_rate+
 regress.Union = lm(Union_density ~ GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini, data = data3)
 residuals.high = residuals(regress.high)
 residuals.Union = residuals(regress.Union)
-plot(residuals.high,residuals.Union)
+plot(residuals.high,residuals.Union,main = "Partial Correlation for First Model")
 abline(lm(residuals.Union~residuals.high), col="red")
 
 partial.correlation_s = cor(residuals.high, residuals.Union, method = 'spearman')
@@ -74,8 +74,8 @@ p.value_s
 
 partial.correlation_p = cor(residuals.high, residuals.Union, method = 'pearson')
 partial.correlation_p
-test.statistic_p = partial.correlation_p*sqrt((n-3)/(1-partial.correlation_p^2))
-p.value_p = 2*pt(abs(test.statistic_p), n-3, lower.tail = F)
+test.statistic_p = partial.correlation_p*sqrt((n-2)/(1-partial.correlation_p^2))
+p.value_p = 2*pt(abs(test.statistic_p), n-2, lower.tail = F)
 p.value_p
 ```
 
@@ -95,19 +95,19 @@ regress.high.t = lm(log(Highschool)~log(GDP)+Urbanity+log(Population)+log(Export
 regress.Union.t = lm(Union_density~log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini, data = data3)
 residuals.high.t = residuals(regress.high.t)
 residuals.Union.t = residuals(regress.Union.t)
-plot(residuals.high.t,residuals.Union.t)
+plot(residuals.high.t,residuals.Union.t,main = "Partial Correlation for Second Model")
 abline(lm(residuals.Union.t~residuals.high.t), col="red")
 
 partial.correlation.t_s = cor(residuals.high.t, residuals.Union.t, method = 'spearman')
 partial.correlation.t_s
-test.statistic.t_s = partial.correlation.t_s*sqrt((n-3)/(1-partial.correlation.t_s^2))
-p.value.t_s = 2*pt(abs(test.statistic.t_s), n-3, lower.tail = F)
+test.statistic.t_s = partial.correlation.t_s*sqrt((n-2)/(1-partial.correlation.t_s^2))
+p.value.t_s = 2*pt(abs(test.statistic.t_s), n-2, lower.tail = F)
 p.value.t_s
 
 partial.correlation.t_p = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
 partial.correlation.t_p
-test.statistic.t_p = partial.correlation.t_p*sqrt((n-3)/(1-partial.correlation.t_p^2))
-p.value.t_p = 2*pt(abs(test.statistic.t_p), n-3, lower.tail = F)
+test.statistic.t_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.t_p^2))
+p.value.t_p = 2*pt(abs(test.statistic.t_p), n-2, lower.tail = F)
 p.value.t_p
 ```
 
@@ -135,13 +135,13 @@ regress.high.f = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemploym
 regress.Union.f = lm(Union_density~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data3)
 residuals.high.f = residuals(regress.high.f)
 residuals.Union.f = residuals(regress.Union.f)
-plot(residuals.high.f,residuals.Union.f)
+plot(residuals.high.f,residuals.Union.f,main = "Partial Correlation for Final Model")
 abline(lm(residuals.Union.f~residuals.high.f), col="red")
 partial.correlation.f_s = cor(residuals.high.f, residuals.Union.f, method = 'spearman')
-test.statistic.f_s = partial.correlation.f_s*sqrt((n-3)/(1-partial.correlation.f_s^2))
-p.value.f_s = 2*pt(abs(test.statistic.f_s), n-3, lower.tail = F)
+test.statistic.f_s = partial.correlation.f_s*sqrt((n-2)/(1-partial.correlation.f_s^2))
+p.value.f_s = 2*pt(abs(test.statistic.f_s), n-2, lower.tail = F)
 
 partial.correlation.f_p = cor(residuals.high.f, residuals.Union.f, method = 'pearson')
-test.statistic.f_p = partial.correlation.t_p*sqrt((n-3)/(1-partial.correlation.f_p^2))
-p.value.f_p = 2*pt(abs(test.statistic.f_p), n-3, lower.tail = F)
+test.statistic.f_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.f_p^2))
+p.value.f_p = 2*pt(abs(test.statistic.f_p), n-2, lower.tail = F)
 ```
