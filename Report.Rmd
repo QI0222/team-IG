@@ -10,19 +10,93 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+```{r,include=FALSE}
+pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,mediation,geepack,conf,car,knitr,gclus,scatterplot3d, ppcor)
+```
+
+```{r,include=FALSE}
+data<-read_excel("Data for the Final Project.xlsx")
+data<-as_tibble(data)
+#select variables that needed for the project and rename some variables
+data2 <- data %>% 
+  dplyr::select(State,Highschool,`Union density`,GDP,Urbanity, Population, Export,`Unemployment rate`,`Cost of living`,Gini, White, Black, Hispanic)
+names(data2)[3]<-"Union_density"
+names(data2)[8]<-"Unemployment_rate"
+names(data2)[9]<-"Cost_of_living"
+#data transformation: generate a new variable called GV to measure the level of racial diversity
+data3 <- data2 %>% 
+  mutate(Racial_diversity=1-White^2-Black^2-Hispanic^2) %>%
+  mutate(norm_Racial_diversity = Racial_diversity*(3/2))
+```
+
 # Introduction
-- Briefly explain the VOC
-- Research question
-- Literature review
-- Dataset interpretation
-- Briefly introduce the methodology that we are going to use
+## VOC theory 
+\quad VoC theory (Varieties of Capitalism) literature has been a classic theory through out decades and it mainly includes two prominent models which are Liberal Market Economies (LMEs) and Coordinated Market Economies (CMEs). This theory has been developed significantly and help securing a firm root in the field of political economy. LME which exemplified by US, UK, the characteristic of this model is  Meanwhile, the CME represented by Sweden and Denmark. The difference between the LME and CME is that the profits of a company mainly comes from the supply and demands in LME, while, the companies in the CME are basically shape the form a core competitiveness through non market relationships.    
+\quad On the country scale of United States, it would be be classified as Liberal Market Economies while, when it comes to the state scale, it likely to be a CME model. 
+
+## Research question
+\quad According to the VoC theory, the United States is defined as liberal market economies and one characteristic of this model is that the union density is proportional to the vocational training level. However, in our researcher’s paper, she has select 9 variables in her dataset and build a linear regression model. The model 
+```{r}
+fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = data3)
+```
+\quad Then we summary the model to check the coefficient, p-value, and other information.  
+```{r}
+summary(fittest)
+```
+\quad The result shows that the coefficient of the high school is negative which means if union density arises, the high school proportion would correspondingly decrease. This phenomenon conflicts with properties of LME in VoC theory. Therefore, we plan to explain this abnormal relationship by taking the racial diversity into account.    
+
+## Literature review
+\quad Market-baised management: Market-Based Management (MBM) enables organizations to succeed in the long term by applying the principles that allow free societies to prosper. Just as upholding values such as free speech, property rights, and progress is important to a healthy, growing society, it is also pivotal in fostering a healthy, growing organization.  
+
+\quad Nation-level/state level: US is called LME because its national governing framework does not has institutions that aggregate preference for public goods, such as high-skill development.
+
+## Dataset interpretation
+**Descriptions: **
+Our dataset has:
+-51 observations(Include all 51 states in US) and 31 variables.
+-Dependent variables included in the model: high school (represent vocational level).
+-Independent variables included in the model: union density, racial(white/black/hispanic), GDP, Urbanity, Population, Export, Cost of Living, Unemployment Rate, Gini
+
+## Briefly introduce the methodology that we are going to use
+\quad According to the question presented, we mainly need to do the next following things: Conducting the initial EDA(exploratory data analysis) and model check.  
+- In the initial EDA part, we draw the scatterplots and bubble plot to show the rough corelationship between union density and vocational training to get the general idea of the question.  
+-We conduct the partial corelation test to check if there still exists significant negative relationship between two variables when we control the other 7 confounding variables.    
+-We make some adjustment for the model to get more valuable results.  
+-We also draw the component residual plot(CR plot) to check if the linear relationship and accordingly make sure that our adjusted models fitted well.  
+-To better measure the racial diversity, we create a new variable based on White/Black/Hispanic.  
+
 
 # Data Check
-- Consistent data might be helpful for analysis 
-- Might consider more representative variabels
+**Concerns:**
+-Sources: Bureau of Labor Statistics
+                 wikipedia 
+                 U.S. Census Bureau
+                 Census Bureau's March Current Population Survey
+-Years: from 2016 to 2018
+\quad We work through the source we found that your data is collected from several different source and years. We are just afraid of this data is a little bit effective because we are not sure that these variables has the consistency. It is more helpful to do the data analyze if data is more consistent.
+
+-Variables:  We check the 9 variables included in your model. We find that you used high school to stand for the vocational training level. While, cause on the state scale, US government side they needs more fundings to satisfy their supply and demand, so we think the high school is ok but it’s better to include more sites such as high technology company, some industries could include vocational training people to satisfy their supply and demand as well. So we wonder if it makes more sense to add other potential sites into amount. Additionally, the variables white/black/hispanic could not show the racial diversity directly. So we create a new variables based on these three variables and we will discuss this later. 
 
 # Exploratory Data Analysis
 - Not a distinguish negative coefficient between vocational training and union density
+
+```{r}
+### Initial EDA 
+plot1 <-  ggplot(data3)+
+  geom_point(aes(x=data3$Highschool,y=data3$Union_density))+
+  geom_smooth(aes(x=data3$Highschool,y=data3$Union_density),se=FALSE)+
+  labs(x="Union Density",y="Highschool")
+plot1
+```
+\quad In the beginning, We started with union density and high school and make the scatter plot after we have move some outliers. While from this plot we are not able to see an obvious relationship between these two variables.   
+
+```{r}
+symbols(data3$Highschool,data3$Union_density,circles= data3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Highschool")
+```
+\quad Moreover, we also draw bubble plot. Same as former plot, we set the union density as independent variable and high school as dependent variable, but this time we replace the spot with a circle, each circle represent for one state and the radius of a circle are the racial diversity level. The more racial diversity level, the larger circle is. While, by obverting this plot we could not confirm these two variables has negative relationship either.  
+
+\quad To better understand this question, we need to research on the model you use and next session will descript this part detailedly.  
+
 
 # Methodology and Result
 
@@ -30,13 +104,9 @@ knitr::opts_chunk$set(echo = TRUE)
 - Get the same coefficient
 - Model validation
 
-### Transformation: Adjusted Model1
+### Transformation
 - Use CrPlots to determin which variable to take log transformation
 - Model validation
-
-### Sensitivity Analaysis
-
-### Adding racial diveristy: Adjusted Model2
 
 ### Partial Correlation
 
