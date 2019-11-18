@@ -105,12 +105,13 @@ symbols(data3$Highschool,data3$Union_density,circles= data3$norm_Racial_diversit
 # Methodology and Result
 
 ### Replicate Original Model
-<<<<<<< HEAD
+
 Since the initial EDA does not show a distinctive pattern of the negative relationship between vocational training and unionization, a replication of the original model that is used in the second-year paper has been implemented. With
 ```{r}
 fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = data3)
 summary(fittest)
-=======
+```  
+
 \qquad Since the initial EDA does not show a distinctive pattern of the negative relationship between vocational training and unionization, a replication of the original model that is used in the second-year paper has been implemented. With
 ```{r,echo = F}
 fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = data3)
@@ -118,7 +119,7 @@ summary(fittest)
 ```
 
 ### Partial Correlation for Original Model
-\qquad For checking if the negative relationship between Union density and Highschool exists in the primary model, we used the partial correlation test. The partial correlation is a measure of the strength and direction of a linear relationship between two continuous variables while controlling for the effect of other continuous variables.  
+\qquad Then using the partial correlation test for checking if the negative relationship between Union density and Highschool exists in the primary model. The partial correlation is a measure of the strength and direction of a linear relationship between two continuous variables while controlling for the effect of other continuous variables.  
 
 ```{r,echo = F}
 n = length(data3$Highschool)
@@ -150,11 +151,12 @@ p.value_s = 2*pt(abs(test.statistic_s), n-2, lower.tail = F)
 test.statistic_s
 p.value_s
 ```  
-\qquad From the output of two methods, we can find those correlations are negative, and P-values are small, which indicates that the negative coefficient of Union density is statistical significance in the primary model. From the plot on residual of Union density and residual of Highschool, the red line has an apparent downward trend. However, by looking at the points on the graph, we found there is a point in the lower right corner. For explaining if this point causes a downward trend, we checked the assumptions in the next step.  
+\qquad From the output of two methods, those correlations are negative, and P-values are small, which indicates that the negative coefficient of Union density is statistical significance in the primary model. From the plot on residual of Union density and residual of Highschool, the red line has an apparent downward trend. However, by looking at the points on the graph, there is a point in the lower right corner.  
+
 
 
 ```{r,echo = F}
->>>>>>> 6d0f90803f1fae6f9a15247774e2d51069cfad8f
+
 #check linearity assumption
 plot(fittest,which=1)
 #check normality assumption
@@ -165,39 +167,37 @@ plot(fittest,which=3)
 crPlots(fittest)
 ```
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 6d0f90803f1fae6f9a15247774e2d51069cfad8f
+
 - Get the same coefficient
 - Model validation
 
-### Transformation
+# Transformation
 - Use CrPlots to determin which variable to take log transformation
 - Model validation
 
-<<<<<<< HEAD
-```{r}
-=======
+
+
 ```{r,echo = F}
->>>>>>> 6d0f90803f1fae6f9a15247774e2d51069cfad8f
+
 fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data3)
 summary(fit1)
 crPlots(fit1)
 plot(fit1,which=1)
 plot(fit1,which=2)
 plot(fit1,which=3)
-```
-Because the original model does not in line with the assumption, data transformation is used to adjust the model. To use the linear regression model, the most significant assumption is that variables should be in the linear relationship with the outcome. Component residual plot is used to measure if every variable satisfies linearity assumption. The red line shows the pattern of the datapoints included in every variable, and the dashed line indicates the best of the fit. If the red line is close to the dashed line and does not show curve pattern, meaning that the linearity assumption is satisfied for that variable. Based on the initial component residual plot of the original model, leverage points exist in datapoints from different variables including “GDP”, “population”, “Export”, “unemployment rate” and “cost of living”. There are issues with leverage points since it would directly change the pattern of the residual plots. For example, looking at the residual plots of “Export”, if the leverage points move upwards or downwards, the red line and the dashed line would move accordingly. The movement is not caused by the movement of the most datapoints, rather caused by the leverage points, which is not the ideal case where the red line should indicate the pattern of the majority of datapoints. To avoid the leverage points, log transformation is used to build the first model, “fit1”. 
+```  
+
+\qquad Because the original model does not in line with the assumption, data transformation is used to adjust the model. To use the linear regression model, the most significant assumption is that variables should be in the linear relationship with the outcome. Component residual plot is used to measure if every variable satisfies linearity assumption. The red line shows the pattern of the datapoints included in every variable, and the dashed line indicates the best of the fit. If the red line is close to the dashed line and does not show curve pattern, meaning that the linearity assumption is satisfied for that variable. Based on the initial component residual plot of the original model, leverage points exist in datapoints from different variables including “GDP”, “population”, “Export”, “unemployment rate” and “cost of living”. There are issues with leverage points since it would directly change the pattern of the residual plots. For example, looking at the residual plots of “Export”, if the leverage points move upwards or downwards, the red line and the dashed line would move accordingly. The movement is not caused by the movement of the most datapoints, rather caused by the leverage points, which is not the ideal case where the red line should indicate the pattern of the majority of datapoints. To avoid the leverage points, log transformation is used to build the first model, “fit1”. 
 In model “fit1”, log transformation has been implemented for the outcome, “highschool” and variables that have leverage points, “GDP”, “population”, “Export”, “unemployment rate” and “cost of living”. After summarizing the model “fit1”, the coefficient between the outcome “highschool” and the variable “union density” is -0.04, not significant. Because the dataset is a sample from the population, coefficient for each sample would be different because of the sampling bias arising from picking up different samples within the population. The insignificant coefficient indicates that the negative relationship between vocational training and union density is not conclusive.
 
-<<<<<<< HEAD
-After modeling, residual plots are generated to check the validation of the model. Looking at the residual plot, nearly all the residuals are equally distributed within the horizontal line valued at zero, indicating that the residuals are random, and the linearity assumption is satisfied. Looking at the Q-Q plot, majority of the residual points are aligned with the straight line, indicating the normality assumption is nearly satisfied. Looking at the scale-location plot, most residues are spread equally along the ranges of predictors, indicating the equal variance assumption is satisfied. Based on the residual plot, the model “fit1” is more valid compared to the original model. Check the component and residual plot again, the issue regarding the leverage points have been improved a lot. But two issues still have to be considered. First, there is a leverage point in GDP after taking log transformation. Second, the variable of union density slightly shows a curved pattern, indicating that linear assumption is not well satisfied, and a more robust model might be considered.
+
+\qquad After modeling, residual plots are generated to check the validation of the model. Looking at the residual plot, nearly all the residuals are equally distributed within the horizontal line valued at zero, indicating that the residuals are random, and the linearity assumption is satisfied. Looking at the Q-Q plot, majority of the residual points are aligned with the straight line, indicating the normality assumption is nearly satisfied. Looking at the scale-location plot, most residues are spread equally along the ranges of predictors, indicating the equal variance assumption is satisfied. Based on the residual plot, the model “fit1” is more valid compared to the original model. Check the component and residual plot again, the issue regarding the leverage points have been improved a lot. But two issues still have to be considered. First, there is a leverage point in GDP after taking log transformation. Second, the variable of union density slightly shows a curved pattern, indicating that linear assumption is not well satisfied, and a more robust model might be considered.
 
 ```{r}
 data4 <-data3 %>% 
   filter(GDP<100000)
-fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+Cost_of_living+Gini,data = data4)
+fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data4)
 summary(fit2)
 crPlots(fit2)
 plot(fit2,which=1)
@@ -205,11 +205,19 @@ plot(fit2,which=2)
 plot(fit2,which=3)
 ```
 
-To deal with the leverage point in log GDP, one of the solutions is to leave it out. The leverage point is Washington DC with highest log GDP. Another model (fit2) with exactly same variables and outcome is created with a new dataset excluding datapoint of Washington DC. After summarizing the model “fit2”, the coefficient of union density changes 20%, indicating the difference is not ignorable.Thus, the leverage point of Washington DC cannot be simply leaved out.
-=======
+\qquad To deal with the leverage point in log GDP, one of the solutions is to leave it out. The leverage point is Washington DC with highest log GDP. Another model (fit2) with exactly same variables and outcome is created with a new dataset excluding datapoint of Washington DC. After summarizing the model “fit2”, the coefficient of union density changes 20%, indicating the difference is not ignorable.Thus, the leverage point of Washington DC cannot be simply leaved out.
 
->>>>>>> 6d0f90803f1fae6f9a15247774e2d51069cfad8f
 ### Partial Correlation
+
+# Adding Racial Diversity
+
+```{r}
+fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini + norm_Racial_diversity,data = data3)
+summary(fit3)
+plot(fit3,which=1)
+plot(fit3,which=2)
+plot(fit3,which=3)
+```
 
 ### Mediation Analysis
 
