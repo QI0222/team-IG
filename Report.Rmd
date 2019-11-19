@@ -32,7 +32,8 @@ data3 <- data2 %>%
   mutate(norm_Racial_diversity = Racial_diversity*(3/2))
 ```
 
-# Introduction
+Introduction
+=============
 ## VOC theory 
 \qquad VoC theory (Varieties of Capitalism) literature has been a classic theory through out these decades and it mainly includes two prominent models which are Liberal Market Economies (LMEs) and Coordinated Market Economies (CMEs). This theory has been developing significantly and helping securing a firm root in the field of political economy. LME which exemplified by US, UK, the characteristic of this model is  Meanwhile, the CME represented by Sweden and Denmark. The difference between the LME and CME is that the profits of a company mainly comes from the supply and demands in LME, while, the companies in the CME are basically shape the form a core competitiveness through non market relationships.  
 
@@ -70,7 +71,8 @@ Dataset details:
 -To better measure the racial diversity, a new variable based on White/Black/Hispanic is created.  
 
 
-# Data Check
+Data Check
+=============
 **Concerns:**
 -Sources: Bureau of Labor Statistics
                  wikipedia 
@@ -102,8 +104,8 @@ symbols(data3$Highschool,data3$Union_density,circles= data3$norm_Racial_diversit
 \qquad To better understand this question, a research on the model is conducted and next session will describe this part detailedly.  
 
 
-# Methodology and Result
-
+Methodology and Result
+=========================
 ### Replicate Original Model
 
 Since the initial EDA does not show a distinctive pattern of the negative relationship between vocational training and unionization, a replication of the original model that is used in the second-year paper has been implemented. With
@@ -172,7 +174,8 @@ crPlots(fittest)
 - Get the same coefficient
 - Model validation
 
-# Transformation
+Transformation
+==================
 - Use CrPlots to determin which variable to take log transformation
 - Model validation
 
@@ -194,7 +197,7 @@ In model “fit1”, log transformation has been implemented for the outcome, �
 
 \qquad After modeling, residual plots are generated to check the validation of the model. Looking at the residual plot, nearly all the residuals are equally distributed within the horizontal line valued at zero, indicating that the residuals are random, and the linearity assumption is satisfied. Looking at the Q-Q plot, majority of the residual points are aligned with the straight line, indicating the normality assumption is nearly satisfied. Looking at the scale-location plot, most residues are spread equally along the ranges of predictors, indicating the equal variance assumption is satisfied. Based on the residual plot, the model “fit1” is more valid compared to the original model. Check the component and residual plot again, the issue regarding the leverage points have been improved a lot. But two issues still have to be considered. First, there is a leverage point in GDP after taking log transformation. Second, the variable of union density slightly shows a curved pattern, indicating that linear assumption is not well satisfied, and a more robust model might be considered.
 
-```{r}
+```{r,echo=F}
 data4 <-data3 %>% 
   filter(GDP<100000)
 fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data4)
@@ -209,9 +212,16 @@ plot(fit2,which=3)
 
 ### Partial Correlation
 
-# Adding Racial Diversity
+Adding Racial Diversity
+========================
+\qquad The final model is adding racial diversity to the transformed model since the main question is if racial diversity can explain the negative effect between unionization and vocational training.  
 
-```{r}
+\qquad The data frame only contains the proportion of Black, White, and Hispanic. First of all, by using the formula from the article “How to Measure Density When You Must,” calculating the proportion of same race which equals to the sum square Black, square White adds, and square Hispanic, then the proportion of different race equals to one minus the proportion of same race. However, in the real world, different states may have different types of races, and different types of the race will affect the result of racial diversity. To alleviate this kind of problem that can arise when modeling, racial diversity needs to be normalized before adding to the model. Times the radical diversity by C/(C-1) can get the normalized racial diversity, C means the total type of race. In this case, C is 3.
+
+$$Racial Diversity = 1 - (Black^2 + White^2 + Hispanic^2)$$
+$$NormRacialDiversity = \frac{C}{C-1}*Racial Diversity$$
+
+```{r,echo = F}
 fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini + norm_Racial_diversity,data = data3)
 summary(fit3)
 plot(fit3,which=1)
