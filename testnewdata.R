@@ -15,6 +15,21 @@ plot(fittest)
 crPlots(fittest)
 
 #transformation
+#fit3 seems to be the best with the least outliners and more valid assumptions
+#Still, in the residuals versus leverage plot, there is a outlier that could impact the coefficient.
+#Need to check out which state it is
 fit1 <- lm(log(Voe)~Union+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop),data=data2)
 summary(fit1)
 plot(fit1)
+
+fit2 <- lm(log(Voe)~Union+Urbanity+Unemployment+GDP+Totalpop,data = data2)
+crPlots(fit2)
+summary(fit2)
+plot(fit2)
+
+fit3 <- lm(log(Voe)~Union+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop),data = data2)
+crPlots(fit3)
+summary(fit3)
+plot(fit3)
+
+
