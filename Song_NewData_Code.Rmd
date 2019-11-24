@@ -1,28 +1,31 @@
 ---
-title: "Song_NewData_Code"
+  title: "Song_NewData_Code"
 author: "Team IG"
 date: "11/21/2019"
 output: html_document
 ---
-
+  
 ```{r setup, include=FALSE}
 pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,mediation,geepack,conf,car,knitr,gclus,scatterplot3d, ppcor,lme4,mediation,quantreg)
 ```
 
 ```{r}
 newdata <- read.csv("new data.csv")
-summary(newdata)
 
-#data transformation: generate a new variable called GV to measure the level of racial diversity
-#Create a new dataset(data2) that includes generalized variety
+#data transformation: generate a new variable to measure the level of racial diversity
+#Create a new dataset(data1) that includes generalized variety
 #Have to change the raw number of White, Black, Hispanic to proportion of the whole population.
 data1 <- newdata %>% 
-  mutate(Racial_diversity=1-White_E^2-Black_E^2-Hispanic_E^2) %>%
+  mutate(Black = BlackE/Totalpop) %>% 
+  mutate(White = WhiteE/Totalpop) %>% 
+  mutate(Hispanic = HispanicE/Totalpop) %>% 
+  mutate(Racial_diversity=1-White^2-Black^2-Hispanic^2) %>%
   mutate(norm_Racial_diversity = Racial_diversity*(3/2))
-summary(data1)
+```
 
+```{r}
 #Try to analysis the data in the single year (2017), which is the same year as the old dateset.
-#Create a new dataset that contains only the data in the year of 2017 (data1)
+#Create a new dataset that contains only the data in the year of 2017 (data2)
 data2 <- filter(newdata,Year=="2017")
 
 #Check the Cr plots for test model
@@ -49,21 +52,45 @@ par(mfrow=c(2,2))
 plot(fit2)
 
 fit3 <- lm(log(Voe)~Union+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop),data = data2)
-crPlots(fit3)
-summary(fit3)
 par(mfrow=c(2,2))
 plot(fit3)
+crPlots(fit3)
+summary(fit3)
 ```
+
+```{r}
+#Create a new dataset(data3) that excludes year between 2005 and 2008
+data3 <- filter(data1,Year>2008)
+fit4 = lm(Voe ~ factor(Year)+Union+Urbanity+Unemployment+GDP_Per_Capital+Totalpop+StudentpopE+giniE,data = data3)
+summary(fit4)
+par(mfrow=c(2,2))
+plot(fit4)
+crPlots(fit4)
+```
+
+```{r}
+fit5 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+log(StudentpopE)+giniE,data = data3)
+summary(fit5)
+par(mfrow=c(2,2))
+plot(fit5)
+crPlots(fit5)
+```
+
+```{r}
+fit6 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+log(StudentpopE)+giniE+norm_Racial_diversity,data = data3)
+summary(fit6)
+par(mfrow=c(2,2))
+plot(fit6)
+crPlots(fit6)
+```
+
 
 ```{r}
 #Multilevel linear regression:fixed effect
 #Consider the yearly data as varying intercept and then fit the model
-#Create a new dataset(data3) that excludes year between 2005 and 2008
-data3 <- filter(data1,Year>2008)
-fit4 <- lmer(log(Voe)~Union+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop)+(1|Year),data=data3)
-summary(fit4)
+fit7 <- lmer(log(Voe)~(1|Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+log(StudentpopE)+giniE,data=data3)
+summary(fit7)
 ```
-
 
 
 ```{r}
