@@ -88,6 +88,7 @@ plot(fit6)
 crPlots(fit6)
 ```
 
+
 ```{r}
 #Add racial diversity
 fit7 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+norm_Racial_diversity,data = data3)
@@ -107,6 +108,7 @@ plot(fit8)
 crPlots(fit8)
 ```
 
+
 ```{r}
 fit9 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE),data = data3)
 summary(fit9)
@@ -114,6 +116,7 @@ par(mfrow=c(2,2))
 plot(fit9)
 crPlots(fit9)
 ```
+
 
 ```{r}
 #Mediation Analysis
