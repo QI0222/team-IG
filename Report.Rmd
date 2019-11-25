@@ -109,7 +109,7 @@ Methodology and Result
 ### Replicate Original Model
 
 Since the initial EDA does not show a distinctive pattern of the negative relationship between vocational training and unionization, a replication of the original model that is used in the second-year paper has been implemented. With
-```{r}
+```{r,echo=FALSE}
 fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = data3)
 summary(fittest)
 ```  
@@ -210,7 +210,37 @@ plot(fit2,which=3)
 
 \qquad To deal with the leverage point in log GDP, one of the solutions is to leave it out. The leverage point is Washington DC with highest log GDP. Another model (fit2) with exactly same variables and outcome is created with a new dataset excluding datapoint of Washington DC. After summarizing the model “fit2”, the coefficient of union density changes 20%, indicating the difference is not ignorable.Thus, the leverage point of Washington DC cannot be simply leaved out.
 
-### Partial Correlation
+### Partial Correlation for Transformed Model
+```{r,echo = F}
+n = length(data3$Highschool)
+regress.high.t = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population), data = data3)
+regress.Union.t = lm(Union_density~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population), data = data3)
+residuals.high.t = residuals(regress.high.t)
+residuals.Union.t = residuals(regress.Union.t)
+plot(residuals.high.t,residuals.Union.t,main="Partial Correlation for Transformed Model")
+abline(lm(residuals.Union.t~residuals.high.t), col="red")
+```  
+By checking the partial correlation of transformed model, the red line is flatter than in the original model.  
+
+Pearson Method  
+```{r,echo=FALSE}
+partial.correlation.t_p = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
+test.statistic.t_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.t_p^2))
+p.value.t_p = 2*pt(abs(test.statistic.t_p), n-2, lower.tail = F)
+partial.correlation.t_p
+p.value.t_p
+```
+
+Spearman Method
+```{r,echo=FALSE}
+partial.correlation.t_s = cor(residuals.high.t, residuals.Union.t, method = 'spearman')
+test.statistic.t_s = partial.correlation.t_s*sqrt((n-2)/(1-partial.correlation.t_s^2))
+p.value.t_s = 2*pt(abs(test.statistic.t_s), n-2, lower.tail = F)
+partial.correlation.t_s
+p.value.t_s
+```
+\qquad By checking the output from two methods, the partial correlations between Union density and Vocational training are smaller, and P-values are larger. Thus, in the transformed model, the negative relationship between the two factors is not as strong as in the original model.  
+
 
 Adding Racial Diversity
 ========================
@@ -227,10 +257,41 @@ summary(fit3)
 plot(fit3,which=1)
 plot(fit3,which=2)
 plot(fit3,which=3)
+```  
+
+\qquad The assumptions of adding the normalized racial diversity model are similar to the transformed model; the only change is that adjusted R-squared increases a little bit, from 0.7202 to 0.7503. The adjusted R-squared is a modified version of R-squared and increases only if the new term improves model more than would be expected by chance. It decreases when a predictor improves the model by less than expected by chance. Therefore, after adding normalized racial diversity, the new model fits better than the transformed model.
+
+### Partial Correlation for Third Model
+```{r,echo = F}
+regress.high.f = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data3)
+regress.Union.f = lm(Union_density~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data3)
+residuals.high.f = residuals(regress.high.f)
+residuals.Union.f = residuals(regress.Union.f)
+plot(residuals.high.f,residuals.Union.f,main = "Partial Correlation for Third Model")
+abline(lm(residuals.Union.f~residuals.high.f), col="red")
 ```
+\qquad By checking the partial correlation of the third model, the red line is pretty close to the horizontal line.  
+Pearson Method  
+```{r,echo = F}
+partial.correlation.f_s = cor(residuals.high.f, residuals.Union.f, method = 'spearman')
+test.statistic.f_s = partial.correlation.f_s*sqrt((n-2)/(1-partial.correlation.f_s^2))
+p.value.f_s = 2*pt(abs(test.statistic.f_s), n-2, lower.tail = F)
+partial.correlation.f_s
+p.value.f_s
+```
+Spearman Method  
+
+```{r,echo = F}
+partial.correlation.f_p = cor(residuals.high.f, residuals.Union.f, method = 'pearson')
+test.statistic.f_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.f_p^2))
+p.value.f_p = 2*pt(abs(test.statistic.f_p), n-2, lower.tail = F)
+partial.correlation.f_p
+p.value.f_p
+```  
+\qquad Then, from the output of different methods, the partial correlations between Union density and Vocational training are close to zero, and P-values are quite big, which indicates this relationship between these two factors is not statistically significant. However, before adding the normalized racial diversity in the model, the coefficient of union density is already not significant, so racial diversity cannot explain the change of this negative relationship very well.  
 
 ### Mediation Analysis
 
-# Conclusion
-
+Conclusion
+=============
 
