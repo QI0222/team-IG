@@ -41,17 +41,16 @@ crPlots(fittest)
 #Still, in the residuals versus leverage plot, there is a outlier that could impact the coefficient.
 #Need to check out which state it is
 fit1 <- lm(log(Voe)~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = data2)
-crPlots(fit1)
 summary(fit1)
 par(mfrow=c(2,2))
 plot(fit1)
-
+crPlots(fit1)
 
 fit2 <- lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=data2)
-crPlots(fit2)
 summary(fit2)
 par(mfrow=c(2,2))
 plot(fit2)
+crPlots(fit2)
 ```
 
 
