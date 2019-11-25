@@ -82,21 +82,21 @@ crPlots(fit5)
 
 ```{r}
 data4 <- filter(data3, State!="District of Columbia")
-fit8 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = data4)
-summary(fit8)
+fit6 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = data4)
+summary(fit6)
 par(mfrow=c(2,2))
-plot(fit8)
-crPlots(fit8)
+plot(fit6)
+crPlots(fit6)
 ```
 
 
 ```{r}
 #Add racial diversity
-fit6 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+norm_Racial_diversity,data = data3)
-summary(fit6)
+fit7 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+norm_Racial_diversity,data = data3)
+summary(fit7)
 par(mfrow=c(2,2))
-plot(fit6)
-crPlots(fit6)
+plot(fit7)
+crPlots(fit7)
 #1 percentage point increase in unionization would increase the vocational training amount to exp(0.16635) -> 1.16635 -> 17% larger?
 ```
 
