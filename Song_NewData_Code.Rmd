@@ -21,15 +21,19 @@ data1 <- newdata %>%
   mutate(Hispanic = HispanicE/Totalpop) %>% 
   mutate(Racial_diversity=1-White^2-Black^2-Hispanic^2) %>%
   mutate(norm_Racial_diversity = Racial_diversity*(3/2))
+  
+data1 = data1 %>%
+  mutate(GDPtest = GDP/100)
 ```
+
 
 ```{r}
 #Try to analysis the data in the single year (2017), which is the same year as the old dateset.
 #Create a new dataset that contains only the data in the year of 2017 (data2)
-data2 <- filter(newdata,Year=="2017")
+data2 <- filter(data1,Year=="2017")
 
 #Check the Cr plots for test model
-fittest <- lm(Voe~Union+Urbanity+Unemployment+GDP+Totalpop,data = data2)
+fittest <- lm(Voe~Union+Urbanity+Unemployment+GDPtest+Totalpop,data = data2)
 summary(fittest)
 par(mfrow=c(2,2))
 plot(fittest)
@@ -45,7 +49,7 @@ summary(fit1)
 par(mfrow=c(2,2))
 plot(fit1)
 
-fit2 <- lm(log(Voe)~Union+Urbanity+Unemployment+GDP+Totalpop,data = data2)
+fit2 <- lm(log(Voe)~Union+Urbanity+Unemployment+GDP/100+Totalpop,data = data2)
 crPlots(fit2)
 summary(fit2)
 par(mfrow=c(2,2))
@@ -57,7 +61,7 @@ plot(fit2)
 #Create a new dataset(data3) that excludes year between 2005 and 2008
 #fit a linear regression without transformation
 data3 <- filter(data1,Year>2008)
-fit4 = lm(Voe ~ factor(Year)+Union+Urbanity+Unemployment+GDP_Per_Capital+Totalpop+StudentpopE+giniE,data = data3)
+fit4 = lm(Voe ~ factor(Year)+Union+Urbanity+Unemployment+GDP_Per_Capital+Totalpop,data = data3)
 summary(fit4)
 par(mfrow=c(2,2))
 plot(fit4)
@@ -68,7 +72,7 @@ crPlots(fit4)
 #Based on the Component residue plot, it seems all the varibales should take log transformation?
 #Or should we choose the same variable as before to take log transformation?
 #Should we include gini to the confound variables?
-fit5 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+log(StudentpopE)+giniE,data = data3)
+fit5 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop),data = data3)
 summary(fit5)
 par(mfrow=c(2,2))
 plot(fit5)
@@ -77,7 +81,7 @@ crPlots(fit5)
 
 ```{r}
 #Add racial diversity
-fit6 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+log(StudentpopE)+giniE+norm_Racial_diversity,data = data3)
+fit6 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+norm_Racial_diversity,data = data3)
 summary(fit6)
 par(mfrow=c(2,2))
 plot(fit6)
@@ -90,14 +94,14 @@ crPlots(fit6)
 #Consider the yearly data as varying intercept and then fit the model
 fit7 <- lmer(log(Voe)~(1|Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capital)+log(Totalpop)+log(StudentpopE)+giniE,data=data3)
 summary(fit7)
-#1 unit increase in unionization would increase the vocational training amount for exp(0.12983) -> 1.138635 -> 13% larger?
+#1 percentage point increase in unionization would increase the vocational training amount to exp(0.12983) -> 1.138635 -> 13% larger?
 ```
 
 
 ```{r}
 #Mediation Analysis
-model.m <- lmer(norm_Racial_diversity~Union+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop)+(1|Year),data=data3)
-model.y <- lmer(log(Voe)~Union+norm_Racial_diversity+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop)+(1|Year),data=data3)
+model.m <- lm(norm_Racial_diversity~Union+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop)+factor(Year),data=data3)
+model.y <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+log(Unemployment)+log(GDP)+log(Totalpop)+factor(Year),data=data3)
 out.1 <- mediate(model.m,model.y,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
 summary(out.1)
 plot(out.1)
