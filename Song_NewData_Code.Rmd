@@ -27,7 +27,7 @@ data1 <- newdata %>%
 ```{r}
 #Try to analysis the data in the single year (2017), which is the same year as the old dateset.
 #Create a new dataset that contains only the data in the year of 2017 (data2)
-data2 <- filter(data1,Year=="2017")
+data2 <- filter(data1,Year=="2010")
 
 #Check the Cr plots for test model
 fittest <- lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = data2)
@@ -72,10 +72,13 @@ crPlots(fit4)
 #Or should we choose the same variable as before to take log transformation?
 #Should we include gini to the confound variables?
 fit5 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = data3)
+fittest1 = lm(log(Voe) ~ factor(Year)+Union+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = data3)
+summary(fittest1)
 summary(fit5)
 par(mfrow=c(2,2))
 plot(fit5)
 crPlots(fit5)
+#For each 1 percentage point increase in union density, there might be 3% decrease in Votional Training. exp(-0.020877) = 0.9793394.
 ```
 
 
