@@ -1,5 +1,5 @@
 ﻿State,Year,Urbanity,Unemployment,GDP_Per_Capita,GDP,Union,Voe,BlackE,BlackM,HispanicE,HispanicM,WhiteE,WhiteM,Totalpop,StudentpopE,StudentpopM,giniE,giniM
-Alabama,2005,10.2,NA,39692,1.2,10.2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Alabama,2005,59,NA,39692,1.2,10.2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Alabama,2006,59,NA,39922,1.2,8.8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Alabama,2007,59,NA,39776,1.2,9.5,209122,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Alabama,2008,59,NA,39273,1.2,9.8,196117,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
