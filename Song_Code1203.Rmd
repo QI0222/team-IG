@@ -49,6 +49,15 @@ summary(fit2)
 par(mfrow=c(2,2))
 plot(fit2)
 crPlots(fit2)
+
+#Mediation Analysis
+model.tm1 <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=data2)
+model.ty1 <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=data2)
+out.1 <- mediate(model.tm1,model.ty1,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
+summary(out.1)
+plot(out.1)
+#In this case, we find the racial diversity does not have a mediation effect.
+```
 ```
 
 
@@ -98,13 +107,15 @@ plot(fit7)
 crPlots(fit7)
 #1 percentage point increase in unionization would increase the vocational training amount to exp(0.16635) -> 1.16635 -> 17% larger?
 ```
+
+
 ```{r}
 #Mediation Analysis
-model.tm <- lm(norm_Racial_diversity~Union+Urbanity+log(Unemployment)+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=data3)
-model.ty <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+log(Unemployment)+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=data3)
-out.1 <- mediate(model.tm,model.ty,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
-summary(out.1)
-plot(out.1)
+model.tm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=data3)
+model.ty <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=data3)
+out.2 <- mediate(model.tm,model.ty,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
+summary(out.2)
+plot(out.2)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
 
@@ -128,11 +139,11 @@ summary(fit9)
 
 ```{r}
 #Mediation Analysis
-model.sm <- lm(norm_Racial_diversity~Union+Urbanity+log(Unemployment)+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
-model.sy <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+log(Unemployment)+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
-out.2 <- mediate(model.sm,model.sy,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
-summary(out.2)
-plot(out.2)
+model.sm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
+model.sy <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
+out.3 <- mediate(model.sm,model.sy,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
+summary(out.3)
+plot(out.3)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
 
