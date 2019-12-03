@@ -58,7 +58,7 @@ summary(out.1)
 plot(out.1)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
-```
+
 
 
 ```{r}
