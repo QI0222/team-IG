@@ -159,12 +159,14 @@ p.value_s
 
 ```{r,echo = F}
 
+par(mfrow=c(2,2))
+plot(fittest)
 #check linearity assumption
-plot(fittest,which=1)
+#plot(fittest,which=1)
 #check normality assumption
-plot(fittest,which=2)
+#plot(fittest,which=2)
 #check constant variance assumption
-plot(fittest,which=3)
+#plot(fittest,which=3)
 #check the component residual plot(also called partial residual plot)
 crPlots(fittest)
 ```
@@ -186,9 +188,8 @@ Transformation
 fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data3)
 summary(fit1)
 crPlots(fit1)
-plot(fit1,which=1)
-plot(fit1,which=2)
-plot(fit1,which=3)
+par(mfrow=c(2,2))
+plot(fit1)
 ```  
 
 \qquad Because the original model does not in line with the assumption, data transformation is used to adjust the model. To use the linear regression model, the most significant assumption is that variables should be in the linear relationship with the outcome. Component residual plot is used to measure if every variable satisfies linearity assumption. The red line shows the pattern of the datapoints included in every variable, and the dashed line indicates the best of the fit. If the red line is close to the dashed line and does not show curve pattern, meaning that the linearity assumption is satisfied for that variable. Based on the initial component residual plot of the original model, leverage points exist in datapoints from different variables including “GDP”, “population”, “Export”, “unemployment rate” and “cost of living”. There are issues with leverage points since it would directly change the pattern of the residual plots. For example, looking at the residual plots of “Export”, if the leverage points move upwards or downwards, the red line and the dashed line would move accordingly. The movement is not caused by the movement of the most datapoints, rather caused by the leverage points, which is not the ideal case where the red line should indicate the pattern of the majority of datapoints. To avoid the leverage points, log transformation is used to build the first model, “fit1”. 
@@ -203,9 +204,8 @@ data4 <-data3 %>%
 fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data4)
 summary(fit2)
 crPlots(fit2)
-plot(fit2,which=1)
-plot(fit2,which=2)
-plot(fit2,which=3)
+par(mfrow=c(2,2))
+plot(fit2)
 ```
 
 \qquad To deal with the leverage point in log GDP, one of the solutions is to leave it out. The leverage point is Washington DC with highest log GDP. Another model (fit2) with exactly same variables and outcome is created with a new dataset excluding datapoint of Washington DC. After summarizing the model “fit2”, the coefficient of union density changes 20%, indicating the difference is not ignorable.Thus, the leverage point of Washington DC cannot be simply leaved out.
@@ -254,9 +254,8 @@ $$NormRacialDiversity = \frac{C}{C-1}*Racial Diversity$$
 ```{r,echo = F}
 fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini + norm_Racial_diversity,data = data3)
 summary(fit3)
-plot(fit3,which=1)
-plot(fit3,which=2)
-plot(fit3,which=3)
+par(mfrow=c(2,2))
+plot(fit3)
 ```  
 
 \qquad The assumptions of adding the normalized racial diversity model are similar to the transformed model; the only change is that adjusted R-squared increases a little bit, from 0.7202 to 0.7503. The adjusted R-squared is a modified version of R-squared and increases only if the new term improves model more than would be expected by chance. It decreases when a predictor improves the model by less than expected by chance. Therefore, after adding normalized racial diversity, the new model fits better than the transformed model.
