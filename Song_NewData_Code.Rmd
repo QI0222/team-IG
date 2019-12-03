@@ -118,6 +118,17 @@ summary(fit9)
 par(mfrow=c(2,2))
 plot(fit9)
 crPlots(fit9)
+
+fit10 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity,data = data3)
+summary(fit10)
+
+fittest = lm(log(Voe) ~ factor(Year)+Union+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity,data = data3)
+summary(fittest)
+
+#VOE concentrators, with studentpop
+#interpret the model
+#propotion of student 
+#confounding variables (different variables)
 ```
 
 
