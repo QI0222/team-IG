@@ -11,7 +11,7 @@ pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,me
 
 
 ```{r}
-newdata <- read.csv("/Applications/BU/BU/675 Statistical Practice  I/team-IG/paper/team-IG-master/new data.csv")
+newdata <- read.csv("new data.csv")
 #data transformation: generate a new variable to measure the level of racial diversity
 #Create a new dataset(data1) that includes generalized variety
 #Have to change the raw number of White, Black, Hispanic to proportion of the whole population.
