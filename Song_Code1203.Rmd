@@ -11,7 +11,7 @@ pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,me
 
 
 ```{r}
-newdata <- read.csv("new data.csv")
+newdata <- read.csv("/Applications/BU/BU/675 Statistical Practice  I/team-IG/paper/team-IG-master/new data.csv")
 #data transformation: generate a new variable to measure the level of racial diversity
 #Create a new dataset(data1) that includes generalized variety
 #Have to change the raw number of White, Black, Hispanic to proportion of the whole population.
@@ -25,8 +25,8 @@ data1 <- newdata %>%
 
 
 ```{r}
-#Try to analysis the data in the single year (2017), which is the same year as the old dateset.
-#Create a new dataset that contains only the data in the year of 2017 (data2)
+#Try to analysis the data in the single year (2010), which is the same year as the old dateset.
+#Create a new dataset that contains only the data in the year of 2010 (data2)
 data2 <- filter(data1,Year=="2010")
 
 #Check the Cr plots for test model
@@ -49,6 +49,13 @@ summary(fit2)
 par(mfrow=c(2,2))
 plot(fit2)
 crPlots(fit2)
+
+#add racial diveristy
+fit3 <- lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+norm_Racial_diversity,data=data2)
+summary(fit3)
+par(mfrow=c(2,2))
+plot(fit3)
+crPlots(fit3)
 
 #Mediation Analysis
 model.tm1 <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=data2)
@@ -129,6 +136,9 @@ crPlots(fit8)
 
 fit9 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity,data = data3)
 summary(fit9)
+par(mfrow=c(2,2))
+plot(fit9)
+crPlots(fit9)
 
 #VOE concentrators, with studentpop
 #interpret the model
@@ -146,7 +156,6 @@ summary(out.3)
 plot(out.3)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
-
 
 
 
