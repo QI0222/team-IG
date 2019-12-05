@@ -11,7 +11,7 @@ pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,me
 
 
 ```{r}
-newdata <- read.csv("new data.csv")
+newdata <- read.csv("/Applications/BU/BU/675 Statistical Practice  I/team-IG/paper/team-IG-master/new data.csv")
 #data transformation: generate a new variable to measure the level of racial diversity
 #Create a new dataset(data1) that includes generalized variety
 #Have to change the raw number of White, Black, Hispanic to proportion of the whole population.
@@ -128,13 +128,13 @@ plot(out.2)
 
 
 ```{r}
-fit8 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE),data = data3)
+fit8 = lm(log(Voe) ~ Union+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data = data3)
 summary(fit8)
 par(mfrow=c(2,2))
 plot(fit8)
 crPlots(fit8)
 
-fit9 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity,data = data3)
+fit9 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+norm_Racial_diversity+factor(Year),data = data3)
 summary(fit9)
 par(mfrow=c(2,2))
 plot(fit9)
