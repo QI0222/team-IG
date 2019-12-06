@@ -102,6 +102,8 @@ Studentpop                       | Student population                      | 200
 - Variables' time spans are not consistent, so we concentrate on 2009-2017 period.    
 - Cause the dataset has only 2010 year's urbanity, so use 2010's urbanity represent 2009-2017's urbanity.   
 
+# Part ONE  
+
 # Exploratory Data Analysis
 - Not a distinguish negative coefficient between vocational training and union density
 
@@ -148,7 +150,7 @@ regress.high = lm(Highschool~GDP+Urbanity+Population+Export+Unemployment_rate+Co
 regress.Union = lm(Union_density~GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini, data = data3)
 residuals.high = residuals(regress.high)
 residuals.Union = residuals(regress.Union)
-plot(residuals.high,residuals.Union,main="Partial Correlation for Original Model")
+plot(residuals.high,residuals.Union,main="Partial Correlation for Original Model",xlab="Residuals for Vocational Training", ylab="Residuals for Union Density")
 abline(lm(residuals.Union~residuals.high), col="red")
 ```  
 
@@ -235,7 +237,7 @@ regress.high.t = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemploym
 regress.Union.t = lm(Union_density~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population), data = data3)
 residuals.high.t = residuals(regress.high.t)
 residuals.Union.t = residuals(regress.Union.t)
-plot(residuals.high.t,residuals.Union.t,main="Partial Correlation for Transformed Model")
+plot(residuals.high.t,residuals.Union.t,main="Partial Correlation for Transformed Model",xlab="Residuals for Vocational Training", ylab="Residuals for Union Density")
 abline(lm(residuals.Union.t~residuals.high.t), col="red")
 ```  
 By checking the partial correlation of transformed model, the red line is flatter than in the original model.  
@@ -285,7 +287,7 @@ regress.high.f = lm(log(Highschool)~log(GDP)+Gini+Urbanity+log(Export)+Unemploym
 regress.Union.f = lm(Union_density~log(GDP)+Gini+Urbanity+log(Export)+Unemployment_rate+log(Cost_of_living)+log(Population)+norm_Racial_diversity, data = data3)
 residuals.high.f = residuals(regress.high.f)
 residuals.Union.f = residuals(regress.Union.f)
-plot(residuals.high.f,residuals.Union.f,main = "Partial Correlation for Third Model")
+plot(residuals.high.f,residuals.Union.f,main = "Partial Correlation for Third Model",xlab="Residuals for Vocational Training", ylab="Residuals for Union Density")
 abline(lm(residuals.Union.f~residuals.high.f), col="red")
 ```
 \qquad By checking the partial correlation of the third model, the red line is pretty close to the horizontal line.  
@@ -307,6 +309,67 @@ partial.correlation.f_p
 p.value.f_p
 ```  
 \qquad Then, from the output of different methods, the partial correlations between Union density and Vocational training are close to zero, and P-values are quite big, which indicates this relationship between these two factors is not statistically significant. However, before adding the normalized racial diversity in the model, the coefficient of union density is already not significant, so racial diversity cannot explain the change of this negative relationship very well.  
+
+# Part TWO
+```{r,include=FALSE}
+newdata<-read_csv("new data.csv")
+newdata = na.omit(newdata)
+newdata = newdata[-c(10,12,14,17,19)]
+newdata = newdata%>% 
+  mutate(Black = BlackE/Totalpop)
+newdata = newdata%>%
+mutate(White = WhiteE/Totalpop)
+newdata = newdata%>%
+mutate(Hispanic = HispanicE/Totalpop)
+
+newdata3 = newdata %>%
+  mutate(Racial_diversity = 1-White^2-Black^2-Hispanic^2)
+
+newdata3 = newdata3 %>%
+  mutate(norm_Racial_diversity = Racial_diversity *(3/2))
+
+```
+
+#Create a new dataset that contains only the data in the year of 2010 (newdata2)
+```{r,echo = F}
+newdata2 <- filter(newdata3, Year ==2010)
+fit1 = lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = newdata2)
+summary(fit1)
+par(mfrow=c(2,2))
+plot(fit1)
+crPlots(fit1)
+```
+#transformation
+```{r,echo = F}
+fit2 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata2)
+summary(fit2)
+par(mfrow=c(2,2))
+plot(fit2)
+crPlots(fit2)
+```
+```{r,echo = F}
+fit3 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop) + norm_Racial_diversity,data = newdata2)
+summary(fit3)
+par(mfrow=c(2,2))
+plot(fit3)
+crPlots(fit3)
+```
+#Analyze the data between the year of 2009 to the year of 2017
+```{r}
+fit4 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata3)
+summary(fit4)
+par(mfrow=c(2,2))
+plot(fit4)
+crPlots(fit4)
+```
+```{r}
+fit5 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity,data = newdata3)
+summary(fit5)
+par(mfrow=c(2,2))
+plot(fit5)
+crPlots(fit5)
+```
+
 
 ### Mediation Analysis
 
