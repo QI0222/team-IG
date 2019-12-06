@@ -134,7 +134,7 @@ par(mfrow=c(2,2))
 plot(fit8)
 crPlots(fit8)
 
-fit9 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+norm_Racial_diversity+factor(Year),data = data3)
+fit9 = lm(log(Voe) ~ Union+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+norm_Racial_diversity+factor(Year),data = data3)
 summary(fit9)
 par(mfrow=c(2,2))
 plot(fit9)
