@@ -3,9 +3,9 @@ title: "Report"
 author: "Team IG"
 date: "11/15/2019"
 output:
-  pdf_document: default
-  word_document: default
   html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -107,7 +107,7 @@ Studentpop                       | Student population                      | 200
 # Exploratory Data Analysis
 - Not a distinguish negative coefficient between vocational training and union density
 
-```{r warning=FALSE, echo=FALSE}
+```{r echo=FALSE, warning=FALSE,message=FALSE}
 ### Initial EDA 
 plot1 <-  ggplot(data3)+
   geom_point(aes(x=data3$Highschool,y=data3$Union_density))+
@@ -330,6 +330,9 @@ newdata3 = newdata3 %>%
 
 ```
 
+Methodology and Result
+=========================
+
 #Create a new dataset that contains only the data in the year of 2010 (newdata2)
 ```{r,echo = F}
 newdata2 <- filter(newdata3, Year ==2010)
@@ -346,30 +349,41 @@ summary(fit2)
 par(mfrow=c(2,2))
 plot(fit2)
 crPlots(fit2)
-```
+```  
+
 ```{r,echo = F}
 fit3 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop) + norm_Racial_diversity,data = newdata2)
 summary(fit3)
 par(mfrow=c(2,2))
 plot(fit3)
 crPlots(fit3)
-```
-#Analyze the data between the year of 2009 to the year of 2017
-```{r}
-fit4 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata3)
+```  
+
+\qquad The data set, which is used to build all the years model, only includes the data from 2009 to 2017. Since in the raw data set, there is some missing value from 2003 to 2008. And due to the new data only have one measurement for urbanity, so this model is assuming that for all the years, urbanity is the same.  
+
+
+```{r,echo=F}
+fit4 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data = newdata3)
 summary(fit4)
+```
+\qquad Compared the all the year model and one year model, the coefficient of union density does not change a lot, -0.02 means every 1 unit increases on Union density, the Voe expect to decrease 2%. The coefficient of 2009 is the intercept, and the c of 2010 indicates the Voe in 2012 is 0.058 unit higher than the Voe coefficients in 2009; the coefficient of 2011 means the Voe in 2012 is 0.18 unit lower than the Voe on 2009; and so on.  
+
+```{r, echo=F}
 par(mfrow=c(2,2))
 plot(fit4)
 crPlots(fit4)
-```
+```  
+
+\qquad By checking the QQ plot, there is one outlier in the lower left, and it was the data for Louisiana in 2010. However, it is unreasonable to remove one year data of one state, so this outlier still exists in the following model.  
+
 ```{r}
-fit5 = lm(log(Voe) ~ factor(Year)+Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity,data = newdata3)
+fit5 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
 summary(fit5)
 par(mfrow=c(2,2))
 plot(fit5)
-crPlots(fit5)
-```
+```  
 
+\quuad After adding the normalized racial diversity in the all year model, the coefficient of union density only decreases 0.02, and the four plots of the model are similar to the previous model. Therefore, it is hard to say that racial diversity can explain the negative relationship between union density and Voe.
 
 ### Mediation Analysis
 To investigate if racial diversity actually mediates the relationship between union density and vocational education, mediation analysis is conducted. A mediation model proposes that the independent variable influences the mediator variable, which in turn influences the dependent variable. In this project, the union density is the independent variable served as the treatment effect, vocational education is the dependent variable acts as the outcome. Racial diversity is the mediator. This mediation analysis is exploring if union density affects racial diversity first, and racial diversity then affects vocational education. Because causal inference is used in the mediation analysis, assumptions of no other unmeasured confounding variables in the model is made.
