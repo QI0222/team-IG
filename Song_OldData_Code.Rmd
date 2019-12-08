@@ -13,13 +13,14 @@ pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,me
 ```{r}
 data<-read_excel("Data for the Final Project.xlsx")
 data<-as_tibble(data)
+
 #select variables that needed for the project and rename some variables
 data2 <- data %>% 
   dplyr::select(State,Highschool,`Union density`,GDP,Urbanity, Population, Export,`Unemployment rate`,`Cost of living`,Gini, White, Black, Hispanic)
 names(data2)[3]<-"Union_density"
 names(data2)[8]<-"Unemployment_rate"
 names(data2)[9]<-"Cost_of_living"
-#data transformation: generate a new variable called GV to measure the level of racial diversity
+#data transformation: generate a new variable called Racial_diversity to measure the level of racial diversity
 data3 <- data2 %>% 
   mutate(Racial_diversity=1-White^2-Black^2-Hispanic^2) %>%
   mutate(norm_Racial_diversity = Racial_diversity*(3/2))
