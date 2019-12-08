@@ -372,7 +372,42 @@ crPlots(fit5)
 
 
 ### Mediation Analysis
+To investigate if racial diversity actually mediates the relationship between union density and vocational education, mediation analysis is conducted. A mediation model proposes that the independent variable influences the mediator variable, which in turn influences the dependent variable. In this project, the union density is the independent variable served as the treatment effect, vocational education is the dependent variable acts as the outcome. Racial diversity is the mediator. This mediation analysis is exploring if union density affects racial diversity first, and racial diversity then affects vocational education. Because causal inference is used in the mediation analysis, assumptions of no other unmeasured confounding variables in the model is made.
+The direct effect is the effect between treatment (independent variable) and outcome (dependent variable). The mediation effect is the effect between treatment and mediators. In the project, the direct effect is the effect between union density and vocational education; the mediation effect is the effect between union density and racial diversity. In the mediation analysis, the sum of the direct effect and the mediation effect is the total effect.
+To interpret the results of mediation analysis, the ACME stands for mediation effect, and ADE stands for direct effect. 
+```{r}
+#Mediation Analysis: Using data on 2010.
+model.tm1 <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=data2)
+model.ty1 <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=data2)
+out.1 <- mediate(model.tm1,model.ty1,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
+summary(out.1)
+plot(out.1)
+#In this case, we find the racial diversity does not have a mediation effect.
+```
+Based on the summarized results of mediation analysis using the data on 2010, the direct effect is -0.02, which is not significant, indicating that union density and vocational training does not have strong relationship. Furthermore, the estimate for mediation effect is 0.002, which is very close to 0, indicating that there is nearly no mediation effect. The proportion of mediation effects is -0.02. Looking at the plot, a large portion of the total effect is caused by direct effect, and the mediation effect is around zero, which corresponds to the  prop.mediated result at -0.02 (2%).
 
+```{r}
+#Mediation Analysis: Using data from 2009 to 2017 (data3).
+#Mediation Analysis
+model.tm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=data3)
+model.ty <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=data3)
+out.2 <- mediate(model.tm,model.ty,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
+summary(out.2)
+plot(out.2)
+#In this case, we find the racial diversity does not have a mediation effect.
+```
+Using the data from 2009 to 2017, the direct effect is -0.02 but this time it becomes significant, this might indicate that union density and vocational education have negative relationship. But because this finding is based on two assumptions, the one is urbanity is same value as 2010 for all the years, the other is all the confounding variables are included in the model. However, the mediation effect is 0.001, which is around zero. And based on the plot, most part of the effect is caused by direct effect and mediation effect ranged around zero, indicating that racial diversity does not mediate the relationship between union density and vocational education.
+
+```{r}
+#Mediation Analysis
+model.sm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
+model.sy <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
+out.3 <- mediate(model.sm,model.sy,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
+summary(out.3)
+plot(out.3)
+#In this case, we find the racial diversity does not have a mediation effect.
+```
+For this mediation analysis, student population has replaced the total population. Again, most of the effect is caused by direct effect rather than mediation effect, indicating that racial diversity does not mediate the relationship between union density and vocational education.
 Conclusion
 =============
 
