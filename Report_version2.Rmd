@@ -97,7 +97,6 @@ Studentpop                       | Student population                      | 200
 # Part ONE  
 
 # Exploratory Data Analysis
-- Not a distinguish negative coefficient between vocational training and union density
 
 ```{r echo=FALSE, warning=FALSE,message=FALSE}
 ### Initial EDA 
@@ -175,8 +174,6 @@ Transformation
 ==================
 - Use CrPlots to determin which variable to take log transformation
 - Model validation
-
-
 
 ```{r,echo = F}
 fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = data3)
