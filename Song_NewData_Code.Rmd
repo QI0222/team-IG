@@ -125,9 +125,8 @@ crPlots(fit8)
 #VOE concentrators, with studentpop
 #propotion of student 
 #confounding variables (different variables)
-```
 
-```{r}
+
 #Mediation Analysis
 model.sm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
 model.sy <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=data3)
@@ -151,7 +150,7 @@ crPlots(fit9)
 
 ```{r}
 #remove urbanity
-fit10 = lm(log(Voe) ~ factor(Year)+Union+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = data4)
+fit10 = lm(log(Voe) ~ factor(Year)+Union+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = data3)
 summary(fit10)
 par(mfrow=c(2,2))
 plot(fit10)
