@@ -39,6 +39,7 @@ Introduction
 
 \qquad On the country scale of United States, it would be be classified as Liberal Market Economies while, while on the state scale, it likely to be a CME model. 
 
+
 ## Research question  
 \qquad According to the VoC theory, the United States is defined as liberal market economies and one characteristic of this market type is that the union density is proportional to the vocational training level. While, the previous presented model contains 9 variables from dataset and defined as a linear model shows as below:  
 ```{r,echo = F}
@@ -54,6 +55,10 @@ summary(fittest)
 \qquad Market-baised management: Market-Based Management (MBM) enables organizations to succeed in the long term by applying the principles that allow free societies to prosper. Just as upholding values such as free speech, property rights, and progress is important to a healthy, growing society, it is also pivotal in fostering a healthy, growing organization.   
 
 \qquad Nation-level/state level: US is called LME because its national governing framework does not has institutions that aggregate preference for public goods, such as high-skill development.
+
+## Resources:
+* Stephen Amberg. Liberal Market Economy or Composite Regime? Institutional Legacies and Labor Market Policy in the United States. Retrieved from https://www.jstor.org/stable/40213467
+* David V. Budescu/Mia Budescu. How to Measure Diversity When You Must. Retrieved from https://www.researchgate.net/publication/221810375_How_to_Measure_Diversity_When_You_Must  
 
 ## Dataset interpretation  
 ### Part I
@@ -72,14 +77,22 @@ Dataset details:
 - Partial corelation test has been used to check if there still exists significant negative relationship between two variables when control the other 7 confounding variables.    
 - Mediation analysis has been conducted to check if racial diverisity could be regarded as a intermediate influencing factor of union density and vocational training.  
 
+
 Data Check
 =============
 **Concerns:**
--Sources: Bureau of Labor Statistics
-          Wikipedia 
-          U.S. Census Bureau
-          Census Bureau's March Current Population Survey
--Years: From 2016 to 2018
+-Difference Sources: 
+* Bureau of Labor Statistics    
+[link](https://www.bls.gov/)  
+* Wikipedia      
+[link](https://en.wikipedia.org/wiki/List_of_U.S._states_by_GDP_per_capita)   
+* U.S. Census Bureau     
+[link](https://www.census.gov/)   
+* Census Bureau's March Current Population Survey     
+[link](https://www.census.gov/history/www/programs/demographic/current_population_survey.html)   
+
+-Years: From 2016 to 2018   
+
 \qquad After looking through the source some issues were found that data is collected from several different source and years, so there comes worries that this data is so effective enough because these variables might have no consistency. It is more helpful to do the data analyze if data is more consistent.
 
 -Variables: Checking 9 variables included in the model, the variable high school stands for the vocational training level. Cause on the state scale, US government needs more fundings to satisfy their supply and demand, so the high school is representitive but it’s better to include more sites such as high technology company, some industries which could contain vocational training people to satisfy their supply and demand as well. It will make more sense to add other potential sites in this variable. Additionally, the variables white/black/hispanic could not show the racial diversity directly,therefore, a new variables based on these three variables is created and will be discussed later in this report.
