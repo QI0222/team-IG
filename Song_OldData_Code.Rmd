@@ -118,10 +118,13 @@ plot(fit2,which=2)
 plot(fit2,which=3)
 ```
 
-#Racial Diversity
+#Add Racial Diversity
 ```{r}
 fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini+norm_Racial_diversity,data = data3)
 summary(fit3)
+plot(fit3,which=1)
+plot(fit3,which=2)
+plot(fit3,which=3)
 ```
 
 #Partial correlation test on Racial Diversity model
