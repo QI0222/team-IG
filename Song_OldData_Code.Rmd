@@ -1,6 +1,6 @@
 ---
 title: "Song_OldData_Code"
-author: "Team IG"
+author: "Team IG: Xinci Chen, Yiru Fei, Qi Huang, Shicheng Wang, Kelly Kung"
 date: "11/11/2019"
 output: html_document
 ---
