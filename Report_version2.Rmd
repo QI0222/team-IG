@@ -138,17 +138,17 @@ abline(lm(residuals.Union~residuals.high), col="red")
 
 \qquad When conducting partial correlation analysis, a method for computing the partial correlation coefficients has to be specified. Two methods are used in this project. One is the Pearson method, which evaluates the linear relationship between two continuous variables. A relationship is linear when a change in one variable is associated with a proportional change in the other variable. The following formula is used to calculate the Pearson r correlation:  
 $$r_{xy} = \frac{n\sum{x_iy_i}-\sum{x_i}\sum{y_i}}{\sqrt{n\sum{x_i}^2-(\sum{x_i})^2}\sqrt{n\sum{y_i}^2-(\sum{y_i})^2}}$$
-$r_{xy} = $Pearson r correlation coefficient between x and y  
-$n = $number of observations  
-$x_i = $value of x (for ith observation)  
-$y_i = $value of y (for ith observation)  
+$r_{xy}$ = Pearson r correlation coefficient between x and y  
+$n$ = number of observations  
+$x_i$ = value of x (for ith observation)  
+$y_i$ = value of y (for ith observation)  
 
 \qquad Another is the Spearman method, which evaluates the monotonic relationship between two continuous or ordinal variables. In a monotonic relationship, the variables tend to change together, but not necessarily at a constant rate. The Spearman rank correlation test does not carry any assumptions about the distribution of the data and is the appropriate correlation analysis when the variables are measured on a scale that is at least ordinal. The following formula is used to calculate the Spearman rank correlation:
 $$\rho = 1 - \frac{6\sum{d_i^2}}{n(n^2-1)}$$  
 
 $\rho$ = Spearman rank correlation  
-$d_i = $the difference between the ranks of corresponding variables  
-$n = $number of observations  
+$d_i$ = the difference between the ranks of corresponding variables  
+$n$ = number of observations  
 
 Pearson Method  
 
