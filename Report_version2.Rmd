@@ -346,7 +346,7 @@ par(mfrow=c(2,2))
 plot(fit2)
 crPlots(fit2)
 ```  
-\qquad Model2 is built based on the transformed model. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model,  the p-value of union density still large and the coefficient of union density is closed to 0. Racial diversity seems not able to explain the negative relationship between union diversity and vocational training.  
+\qquad Model2 is built based on the transformed model. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model,  the p-value of union density still large and the coefficient of union density is closed to 0.
 
 ### Adding Racial Diversity
 ```{r,echo = F}
