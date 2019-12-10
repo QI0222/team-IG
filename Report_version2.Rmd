@@ -163,23 +163,22 @@ P-value = 0.008161668
 partial.correlation_s = cor(residuals.high, residuals.Union, method = 'spearman')
 test.statistic_s = partial.correlation_s*sqrt((n-2)/(1-partial.correlation_s^2))
 p.value_s = 2*pt(abs(test.statistic_s), n-2, lower.tail = F)
-
 ```  
 \qquad From the output of two methods, correlations between union density and vocational education are negative. The small P-value (<0.05) indicates that the negative coefficient of Union density is statistically significant in the primary model. From the plot on residual of Union density and residual of Highschool, the red line, which represents the relationship between union density and vocational education, has an apparent downward trend. However, by looking at the points on the graph, there is a leverage point in the lower right corner, indicating some data transformation might be needed.
 
 ```{r,echo = F}
-
-#check linearity assumption
+par(mfrow=c(2,2))
 plot(fittest,which=1)
-#check normality assumption
 plot(fittest,which=2)
-#check constant variance assumption
 plot(fittest,which=3)
+```
+\qquad The plots above are used to check the assumptions of Linear Regression. These assumptions are linearity assumption, normality assumption, and constant variance assumption. The first plot shown here is Residuals vs Fitted plot which is used to check linearity assumption. Ans ideal plot should show the equally spread residuals around the horizontal line without any distinct patterns. The plot above indicates the violation of the linearity assumption. The normality assumption can be checked by the Q-Q plot. The ideal plot of residuals should approximately follow a straight line. Some points are skewed at the top right of the plot which indicates the violation of normality assumption. The third plot, which is a scale-location plot can be used to detect the assumption of equal variance. An ideal plot will show a horizontal line with randomly spread points. In our case, the constant variance assumption is violated. If the assumptions of Linear Regression are not met, it indicates that a transformation in the linear regression is required.
+
+```{r}
 #check the component residual plot(also called partial residual plot)
 crPlots(fittest)
 ```  
 
-\qquad The plots above are used to check the assumptions of Linear Regression. These assumptions are linearity assumption, normality assumption, and constant variance assumption. The first plot shown here is Residuals vs Fitted plot which is used to check linearity assumption. Ans ideal plot should show the equally spread residuals around the horizontal line without any distinct patterns. The plot above indicates the violation of the linearity assumption. The normality assumption can be checked by the Q-Q plot. The ideal plot of residuals should approximately follow a straight line. Some points are skewed at the top right of the plot which indicates the violation of normality assumption. The third plot, which is a scale-location plot can be used to detect the assumption of equal variance. An ideal plot will show a horizontal line with randomly spread points. In our case, the constant variance assumption is violated. If the assumptions of Linear Regression are not met, it indicates that a transformation in the linear regression is required.
 
 Transformation
 ==================
@@ -190,6 +189,7 @@ Transformation
 fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = olddata3)
 summary(fit1)
 crPlots(fit1)
+par(mfrow=c(2,2))
 plot(fit1,which=1)
 plot(fit1,which=2)
 plot(fit1,which=3)
@@ -207,6 +207,7 @@ olddata4 <-olddata3 %>%
 fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = olddata4)
 summary(fit2)
 crPlots(fit2)
+par(mfrow=c(2,2))
 plot(fit2,which=1)
 plot(fit2,which=2)
 plot(fit2,which=3)
@@ -263,6 +264,7 @@ $$NormRacialDiversity = \frac{C}{C-1}*Racial Diversity$$
 ```{r,echo = F}
 fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini + norm_Racial_diversity,data = olddata3)
 summary(fit3)
+par(mfrow=c(2,2))
 plot(fit3,which=1)
 plot(fit3,which=2)
 plot(fit3,which=3)
@@ -317,13 +319,10 @@ newdata = newdata%>%
 mutate(White = WhiteE/Totalpop)
 newdata = newdata%>%
 mutate(Hispanic = HispanicE/Totalpop)
-
 newdata3 = newdata %>%
   mutate(Racial_diversity = 1-White^2-Black^2-Hispanic^2)
-
 newdata3 = newdata3 %>%
   mutate(norm_Racial_diversity = Racial_diversity *(3/2))
-
 ```
 
 Methodology and Result
@@ -338,8 +337,8 @@ par(mfrow=c(2,2))
 plot(fit1)
 crPlots(fit1)
 ```
+\qquad Model1 is the linear regression of vocational education concentrator on union denisty, Urbanity, Unemployment rate, GDP per Capita and population. Based on the disgnotsic plots, the assumptions of linear regression are violated. Log transformation on the outcome and predictors will be used in here.
 
-### Transformation
 ```{r,echo = F}
 fit2 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata2)
 summary(fit2)
@@ -347,6 +346,7 @@ par(mfrow=c(2,2))
 plot(fit2)
 crPlots(fit2)
 ```  
+\qquad Model2 is built based on the transformed model. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model,  the p-value of union density still large and the coefficient of union density is closed to 0. Racial diversity seems not able to explain the negative relationship between union diversity and vocational training.  
 
 ### Adding Racial Diversity
 ```{r,echo = F}
