@@ -120,7 +120,7 @@ summary(fittest)
 ```  
 
 ### Partial Correlation for Original Model
-\qquad Because there are other factors that will impact the outcome, vocational education, partial correlation analysis is implemented to better investigate the relationship between union density, specifically and vocational education. Partial correlation is a measure of the strength and direction of a linear relationship between two continuous variables while controlling for the effect of other continuous variables. In terms of the strength of relationship, the value of the correlation coefficient varies between $+1$ and $-1$. A value of $± 1$ indicates a perfect degree of association between the two variables. As the correlation coefficient value goes towards $0$, the relationship between the two variables will be weaker.  
+\qquad Because there are other factors that will impact the outcome, vocational education, partial correlation analysis is implemented to better investigate the relationship between union density, specifically and vocational education. Partial correlation is a measure of the strength and direction of a linear relationship between two continuous variables while controlling for the effect of other continuous variables. In terms of the strength of relationship, the value of the correlation coefficient varies between $+1$ and $-1$. A value of $+1$ and $-1$ indicates a perfect degree of association between the two variables. As the correlation coefficient value goes towards $0$, the relationship between the two variables will be weaker.  
 
 ```{r,echo=F}
 n = length(olddata3$Highschool)
@@ -147,22 +147,23 @@ $d_i$ = the difference between the ranks of corresponding variables
 $n$ = number of observations  
 
 Pearson Method  
+Partial Correlation = -0.4167175  
+P-value = 0.002351165
 
 ```{r,echo = F}
 partial.correlation_p = cor(residuals.high, residuals.Union, method = 'pearson')
 test.statistic_p = partial.correlation_p*sqrt((n-2)/(1-partial.correlation_p^2))
 p.value_p = 2*pt(abs(test.statistic_p), n-2, lower.tail = F)
-partial.correlation_p
-p.value_p
 ```  
 Spearman Method  
+Partial Correlation = -2.7575  
+P-value = 0.008161668
 
 ```{r,echo = F}
 partial.correlation_s = cor(residuals.high, residuals.Union, method = 'spearman')
 test.statistic_s = partial.correlation_s*sqrt((n-2)/(1-partial.correlation_s^2))
 p.value_s = 2*pt(abs(test.statistic_s), n-2, lower.tail = F)
-test.statistic_s
-p.value_s
+
 ```  
 \qquad From the output of two methods, correlations between union density and vocational education are negative. The small P-value (<0.05) indicates that the negative coefficient of Union density is statistically significant in the primary model. From the plot on residual of Union density and residual of Highschool, the red line, which represents the relationship between union density and vocational education, has an apparent downward trend. However, by looking at the points on the graph, there is a leverage point in the lower right corner, indicating some data transformation might be needed.
 
@@ -176,7 +177,8 @@ plot(fittest,which=2)
 plot(fittest,which=3)
 #check the component residual plot(also called partial residual plot)
 crPlots(fittest)
-```
+```  
+
 \qquad The plots above are used to check the assumptions of Linear Regression. These assumptions are linearity assumption, normality assumption, and constant variance assumption. The first plot shown here is Residuals vs Fitted plot which is used to check linearity assumption. Ans ideal plot should show the equally spread residuals around the horizontal line without any distinct patterns. The plot above indicates the violation of the linearity assumption. The normality assumption can be checked by the Q-Q plot. The ideal plot of residuals should approximately follow a straight line. Some points are skewed at the top right of the plot which indicates the violation of normality assumption. The third plot, which is a scale-location plot can be used to detect the assumption of equal variance. An ideal plot will show a horizontal line with randomly spread points. In our case, the constant variance assumption is violated. If the assumptions of Linear Regression are not met, it indicates that a transformation in the linear regression is required.
 
 Transformation
@@ -224,23 +226,28 @@ abline(lm(residuals.Union.t~residuals.high.t), col="red")
 ```  
 
 Pearson Method  
+Partial Correlation = -0.2375583  
+P-value = 0.09323562  
+
 ```{r,echo=FALSE}
 partial.correlation.t_p = cor(residuals.high.t, residuals.Union.t, method = 'pearson')
 test.statistic.t_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.t_p^2))
 p.value.t_p = 2*pt(abs(test.statistic.t_p), n-2, lower.tail = F)
-partial.correlation.t_p
-p.value.t_p
+
 ```
 
-Spearman Method
+Spearman Method  
+Partial Correlation = -0.2179186  
+P-value = 0.1244902  
+
 ```{r,echo=FALSE}
 partial.correlation.t_s = cor(residuals.high.t, residuals.Union.t, method = 'spearman')
 test.statistic.t_s = partial.correlation.t_s*sqrt((n-2)/(1-partial.correlation.t_s^2))
 p.value.t_s = 2*pt(abs(test.statistic.t_s), n-2, lower.tail = F)
-partial.correlation.t_s
-p.value.t_s
+
 ```
 \qquad Partial correlation analysis is implemented again with transformed variables to check the relationship between union density and vocational education. Looking at the partial correlation plot, the red line becomes flatter.   
+
 \qquad Based on the output from two methods, the partial correlation coefficient between Union density and Vocational training are smaller, and P-values are larger. Thus, in the transformed model, the negative relationship between the two union density and vocational training is not as strong as it in the original model.  
 
 
@@ -276,23 +283,26 @@ abline(lm(residuals.Union.f~residuals.high.f), col="red")
 \qquad By checking the partial correlation of the third model, the red line is pretty close to the horizontal line, indicating that the negative correlation between union density and vocational training is weak. 
 
 Pearson Method  
+Partial Correlation = -0.1242534  
+P-value = 0.3849993 
+
 ```{r,echo = F}
 partial.correlation.f_s = cor(residuals.high.f, residuals.Union.f, method = 'spearman')
 test.statistic.f_s = partial.correlation.f_s*sqrt((n-2)/(1-partial.correlation.f_s^2))
 p.value.f_s = 2*pt(abs(test.statistic.f_s), n-2, lower.tail = F)
-partial.correlation.f_s
-p.value.f_s
+
 ```
 Spearman Method  
+Partial Correlation = -0.1408109  
+P-value = 0.09939286  
 
 ```{r,echo = F}
 partial.correlation.f_p = cor(residuals.high.f, residuals.Union.f, method = 'pearson')
 test.statistic.f_p = partial.correlation.t_p*sqrt((n-2)/(1-partial.correlation.f_p^2))
 p.value.f_p = 2*pt(abs(test.statistic.f_p), n-2, lower.tail = F)
-partial.correlation.f_p
-p.value.f_p
+
 ```  
-\qquad TThen, from the output of different methods, the partial correlations between Union density and Vocational training are close to zero, and P-values are quite large, which indicates this relationship between these two factors is not statistically significant.
+\qquad Then, from the output of different methods, the partial correlations between Union density and Vocational training are close to zero, and P-values are quite large, which indicates this relationship between these two factors is not statistically significant.
 
 \qquad To summarize the results, two findings are found based on the research question. First, there is no significant relationship  between union density and vocational education. Second, the racial diversity changes the results of linear model to some extent. But for the question of if the racial diversity explains the relationship, no conclusion can be generalized. 
 
