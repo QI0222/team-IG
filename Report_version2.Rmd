@@ -34,18 +34,14 @@ olddata3 <- olddata2 %>%
 
 Introduction
 =============
-Initially, this project is to explore if the racial diversity affects the negative relationship between union density and vocational education. Two questions are mainly analyzed. First, if the negative relationship actually exists between union density and vocational education. Second, if racial diversity mediates the relationship.
+\qquad Initially, this project is to explore if the racial diversity affects the negative relationship between union density and vocational education. Two questions are mainly analyzed. First, if the negative relationship actually exists between union density and vocational education. Second, if racial diversity mediates the relationship.
 
 ## Research question  
-\qquad According to the VoC theory, the United States is defined as liberal market economies and one characteristic of this market type is that the union density is proportional to the vocational training level. While, the previous presented model contains 9 variables from dataset and defined as a linear model shows as below:  
-```{r,echo = F}
-fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = olddata3)
-```
-\qquad The summary of the model shows the coefficient, p-value, and other information.    
-```{r,echo = F}
-summary(fittest)
-```
-\qquad According to summary of the linear model, the coefficient of the high school is negative which means if union density arises, the high school would correspondingly decrease. This phenomenon apparently conflicts with properties of LME in VoC theory. Accordingly, a potential explaination comes that racial diversity in each state might leads to this negative relationship between vocational training and union density.  
+\qquad According to the VoC theory, the United States is defined as liberal market economies and one characteristic of this market type is that the union density is proportional to the vocational training level. While, the previous presented model contains 9 variables from dataset and defined as a linear model and the result shows below:    
+$$Highschool=4.754\exp(5)-1.692exp(4)Uniondensity+6.629exp(-2)GDP-1.045exp(3)Urbanity+$$
+$$2.804exp(2)Population-5.176exp(1)Export+1.909exp(4)Unemployrate+1.241exp(3)Costofliving-9.598exp(5)Gini$$   
+
+\qquad The coefficient of high school which indicates there exists negative relationship between union density and high school. This apparently conflicts with properties of LME in VoC theory. Accordingly, a potential explaination comes that racial diversity in each state might leads to this negative relationship between vocational training and union density.  
 
 ## Literature review
 \qquad Market-baised management: Market-Based Management (MBM) enables organizations to succeed in the long term by applying the principles that allow free societies to prosper. Just as upholding values such as free speech, property rights, and progress is important to a healthy, growing society, it is also pivotal in fostering a healthy, growing organization.   
@@ -59,14 +55,14 @@ summary(fittest)
 ## Dataset interpretation  
 ### Part I
 **Data Descriptions: **  
-The initial dataset sent has 31 variables for the total of 51 states in the US. Not all the variables are used. Based on the content of the project, the dependent variable is the high school student that represents the vocational education, and the independent variables includes the predictor and other confounding variables. Predictor is the union density, and confounding variables are racial diversity, GDP, urbanity, population, export, cost of living, unemployment rate and Gini. To better represent the racial diversity, a normalized ratio diversity variable has been added to the dataset rather than simply using the number of White, Black and Hispanic people.
-**Data Governance: **
--	Inconsistency. The source and the year of the data are inconsistent. Data are sourced separately from Bureau of Labor Statistics, Wikipedia, U.S. Census Bureau and Census Bureau’s March Current Population Survey. There might be difference on each data from different source. Data for each variable is collected in different years, from 2016 to 2018. 
--	Misrepresentatives of vocational education. In the original dataset, the vocation education is represented by the number of high school students. However, based on the VoC theory, the government plays an important role in determine the level of vocational education. Therefore, it might be more helpful to use the supply side of vocational education rather than the demand side. 
--	Misrepresentatives of racial diversity. The racial diversity is initially represented by the number of White / Black / Hispanic people. However, based on the literature about racial diversity, the normalized racial diversity that is calculated by the proportion of different races is more reasonable. Therefore, a new variable named “normalized racial diversity” is added into the dataset.
+The initial dataset sent has 31 variables for the total of 51 states in the US. Not all the variables are used. Based on the content of the project, the dependent variable is the high school student that represents the vocational education, and the independent variables includes the predictor and other confounding variables. Predictor is the union density, and confounding variables are racial diversity, GDP, urbanity, population, export, cost of living, unemployment rate and Gini. To better represent the racial diversity, a normalized ratio diversity variable has been added to the dataset rather than simply using the number of White, Black and Hispanic people.     
+**Data Governance: **   
+-	Inconsistency. The source and the year of the data are inconsistent. Data are sourced separately from Bureau of Labor Statistics, Wikipedia, U.S. Census Bureau and Census Bureau’s March Current Population Survey. There might be difference on each data from different source. Data for each variable is collected in different years, from 2016 to 2018.      
+-	Misrepresentatives of vocational education. In the original dataset, the vocation education is represented by the number of high school students. However, based on the VoC theory, the government plays an important role in determine the level of vocational education. Therefore, it might be more helpful to use the supply side of vocational education rather than the demand side.     
+-	Misrepresentatives of racial diversity. The racial diversity is initially represented by the number of White / Black / Hispanic people. However, based on the literature about racial diversity, the normalized racial diversity that is calculated by the proportion of different races is more reasonable. Therefore, a new variable named “normalized racial diversity” is added into the dataset.     
 
-###Part Two
-**Data Descriptions: **  
+### Part Two
+**Data Descriptions: **    
 
 Variable Name                    | Interpretation                          | Time Span    
 -------------------------------- | --------------------------------------- | ----------------------
@@ -79,9 +75,9 @@ Racial(black/hispanic/white)     | Racial proportion for each race         | 200
 Totalpop                         | Total population                        | 2009-2017
 Studentpop                       | Student population                      | 2009-2017
 
-**Data Governance: **
--	Missing data. Looking into the second dataset, values for some variables between 2005 and 2009 are missing. Therefore, data from 2009 to 2017 are used for model fitting.
--	Because the urbanity only has data at the year of 2010, the same value is applied to every single year analysis.
+**Data Governance: **  
+-	Missing data. Looking into the second dataset, values for some variables between 2005 and 2009 are missing. Therefore, data from 2009 to 2017 are used for model fitting.   
+-	Because the urbanity only has data at the year of 2010, the same value is applied to every single year analysis.   
 
 
 ## Methodology  
@@ -244,7 +240,7 @@ p.value.t_s = 2*pt(abs(test.statistic.t_s), n-2, lower.tail = F)
 partial.correlation.t_s
 p.value.t_s
 ```
-\qquad Partial correlation analysis is implemented again with transformed variables to check the relationship between union density and vocational education. Looking at the partial correlation plot, the red line becomes flatter. 
+\qquad Partial correlation analysis is implemented again with transformed variables to check the relationship between union density and vocational education. Looking at the partial correlation plot, the red line becomes flatter.   
 \qquad Based on the output from two methods, the partial correlation coefficient between Union density and Vocational training are smaller, and P-values are larger. Thus, in the transformed model, the negative relationship between the two union density and vocational training is not as strong as it in the original model.  
 
 
@@ -266,7 +262,7 @@ plot(fit3,which=3)
 ```  
 
 \qquad The assumptions of adding the normalized racial diversity model are similar to the transformed model; the only change is that adjusted R-squared increases a little bit, from 0.7202 to 0.7503. 
-After data transformation, the linear regression assumptions have been satisfied. Compared to the previous model, the adjusted R-squared increases a little bit, from 0.7202 to 0.7503, meaning that this model captures more information from the dataset. The adjusted R-squared is a modified version of R-squared and increases only if the new term improves model more than would be expected by chance. It decreases when a predictor improves the model by less than expected by chance. Therefore, after adding normalized racial diversity, the new model fits better than the transformed model.=
+After data transformation, the linear regression assumptions have been satisfied. Compared to the previous model, the adjusted R-squared increases a little bit, from 0.7202 to 0.7503, meaning that this model captures more information from the dataset. The adjusted R-squared is a modified version of R-squared and increases only if the new term improves model more than would be expected by chance. It decreases when a predictor improves the model by less than expected by chance. Therefore, after adding normalized racial diversity, the new model fits better than the transformed model.  
 
 ### Partial Correlation for Third Model
 ```{r,echo = F}
@@ -323,7 +319,7 @@ newdata3 = newdata3 %>%
 Methodology and Result
 =========================
 
-#Create a new dataset that contains only the data in the year of 2010 (newdata2)
+# Create a new dataset that contains only the data in the year of 2010 (newdata2)
 ```{r,echo = F}
 newdata2 <- filter(newdata3, Year ==2010)
 fit1 = lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = newdata2)
@@ -351,13 +347,15 @@ plot(fit3)
 crPlots(fit3)
 ```  
 
+\qquad Model3 is built based on the transformed model and it considers the normalized racial diversity. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model,  the p-value of union density still large and the coefficient of union density is closed to 0. Racial diversity seems not able to explain the negative relationship between union diversity and vocational training.    
+ 
 \qquad The data set, which is used to build all the years model, only includes the data from 2009 to 2017. Since in the raw data set, there is some missing value from 2003 to 2008. And due to the new data only have one measurement for urbanity, so this model is assuming that for all the years, urbanity is the same.  
-
 
 ```{r,echo=F}
 fit4 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data = newdata3)
 summary(fit4)
 ```
+
 \qquad Compared the all the year model and one year model, the coefficient of union density does not change a lot, -0.02 means every 1 unit increases on Union density, the Voe expect to decrease 2%. The coefficient of 2009 is the intercept, and the c of 2010 indicates the Voe in 2012 is 0.058 unit higher than the Voe coefficients in 2009; the coefficient of 2011 means the Voe in 2012 is 0.18 unit lower than the Voe on 2009; and so on.  
 
 ```{r, echo=F}
@@ -367,8 +365,7 @@ crPlots(fit4)
 ```  
 
 \qquad By checking the QQ plot, there is one outlier in the lower left, and it was the data for Louisiana in 2010. However, it is unreasonable to remove one year data of one state, so this outlier still exists in the following model.  
-
-```{r}
+```{r,echo=FALSE}
 fit5 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
 summary(fit5)
 par(mfrow=c(2,2))
@@ -377,6 +374,25 @@ plot(fit5)
 
 \qquad After adding the normalized racial diversity in the all year model, the coefficient of union density only decreases 0.02, and the four plots of the model are similar to the previous model. Therefore, it is hard to say that racial diversity can explain the negative relationship between union density and Voe.
 
+```{r,echo=FALSE}
+fit6 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity+factor(Year),data = newdata3)
+summary(fit6)
+par(mfrow=c(2,2))
+plot(fit6)
+```  
+
+\qquad The dataset contains total population and student population. In order to see how population change could influence the result, replace the total population with student population and add normalized racial diversity into the model6. While, the result does not change much compared with model4. Cr plots do not show much change either so the conclusion is same as the former one.     
+
+```{r,echo=FALSE}
+fit8 = lm(log(Voe) ~ Union+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
+summary(fit8)
+par(mfrow=c(2,2))
+plot(fit8)
+```     
+
+\qquad The issue exists in dataset that it uses 2010 urbanity value stands for all years’ value and it is acknowledged that urbanity doesn’t have to be included in the model, so model8 removes urbanity, while it turns out to be same result and conclusion as before.    
+
+  
 ### Mediation Analysis
 \qquad To investigate if racial diversity actually mediates the relationship between union density and vocational education, mediation analysis is conducted. A mediation model proposes that the independent variable influences the mediator variable, which in turn influences the dependent variable. In this project, the union density is the independent variable served as the treatment effect, vocational education is the dependent variable acts as the outcome. Racial diversity is the mediator. This mediation analysis is exploring if union density affects racial diversity first, and racial diversity then affects vocational education. Because causal inference is used in the mediation analysis, assumptions of no other unmeasured confounding variables in the model is made.
 The direct effect is the effect between treatment (independent variable) and outcome (dependent variable). The mediation effect is the effect between treatment and mediators. In the project, the direct effect is the effect between union density and vocational education; the mediation effect is the effect between union density and racial diversity. In the mediation analysis, the sum of the direct effect and the mediation effect is the total effect.
@@ -415,6 +431,7 @@ plot(out.3)
 ```
 \qquad For this mediation analysis, student population has replaced the total population. Again, most of the effect is caused by direct effect rather than mediation effect, indicating that racial diversity does not mediate the relationship between union density and vocational education.  
 
-Conclusion
+Conclusion  
 =============
-
+* According to series of models built above, there is no evidence to say racial diversity explains relationship between vocational training and union density.     
+* These models are based on the dataset which mainly includes union density, GDP per capita, and other seven independent variables. There could be other factors which influence the vocation training level, so it might turn out to be different result when other factors are considered in model.   
