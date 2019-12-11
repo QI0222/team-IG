@@ -13,9 +13,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ```{r,include=FALSE}
 pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,mediation,geepack,conf,car,knitr,gclus,scatterplot3d, ppcor)
+library(jtools)
 ```
 
 ```{r,include=FALSE}
@@ -33,64 +33,60 @@ olddata3 <- olddata2 %>%
   mutate(norm_Racial_diversity = Racial_diversity*(3/2))
 ```
 
-Introduction
-=============
+# Introduction
+
 \qquad Initially, this project is to explore if the racial diversity affects the negative relationship between union density and vocational education. Two questions are mainly analyzed. First, if the negative relationship actually exists between union density and vocational education. Second, if racial diversity mediates the relationship.
 
-## Research question  
+# Research question  
+
 \qquad According to the VoC theory, the United States is defined as liberal market economies and one characteristic of this market type is that the union density is proportional to the vocational training level. While, the previous presented model contains 9 variables from dataset and defined as a linear model and the result shows below:    
 $$Highschool=4.754\exp(5)-1.692exp(4)Uniondensity+6.629exp(-2)GDP-1.045exp(3)Urbanity+$$
 $$2.804exp(2)Population-5.176exp(1)Export+1.909exp(4)Unemployrate+1.241exp(3)Costofliving-9.598exp(5)Gini$$   
 
 \qquad The coefficient of high school which indicates there exists negative relationship between union density and high school. This apparently conflicts with properties of LME in VoC theory. Accordingly, a potential explaination comes that racial diversity in each state might leads to this negative relationship between vocational training and union density.  
 
-**Part One**
+# Part One:
 
-## Dataset interpretation  
+# Dataset interpretation  
 
-**Data Descriptions: **  
+### Data Description:
 The initial dataset sent has 31 variables for the total of 51 states in the US. Not all the variables are used. Based on the content of the project, the dependent variable is the high school student that represents the vocational education, and the independent variables includes the predictor and other confounding variables. Predictor is the union density, and confounding variables are racial diversity, GDP, urbanity, population, export, cost of living, unemployment rate and Gini. To better represent the racial diversity, a normalized ratio diversity variable has been added to the dataset rather than simply using the number of White, Black and Hispanic people.  
 
-**Data Governance: **   
--	Inconsistency. The source and the year of the data are inconsistent. Data are sourced separately from Bureau of Labor Statistics, Wikipedia, U.S. Census Bureau and Census Bureau’s March Current Population Survey. There might be difference on each data from different source. Data for each variable is collected in different years, from 2016 to 2018.      
--	Misrepresentatives of vocational education. In the original dataset, the vocation education is represented by the number of high school students. However, based on the VoC theory, the government plays an important role in determine the level of vocational education. Therefore, it might be more helpful to use the supply side of vocational education rather than the demand side.     
--	Misrepresentatives of racial diversity. The racial diversity is initially represented by the number of White / Black / Hispanic people. However, based on the literature about racial diversity, the normalized racial diversity that is calculated by the proportion of different races is more reasonable. Therefore, a new variable named “normalized racial diversity” is added into the dataset.     
+### Data Governance: 
+\qquad Inconsistency. The source and the year of the data are inconsistent. Data are sourced separately from Bureau of Labor Statistics, Wikipedia, U.S. Census Bureau and Census Bureau’s March Current Population Survey. There might be difference on each data from different source. Data for each variable is collected in different years, from 2016 to 2018.      
+\qquad Misrepresentatives of vocational education. In the original dataset, the vocation education is represented by the number of high school students. However, based on the VoC theory, the government plays an important role in determine the level of vocational education. Therefore, it might be more helpful to use the supply side of vocational education rather than the demand side.     
+\qquad Misrepresentatives of racial diversity. The racial diversity is initially represented by the number of White / Black / Hispanic people. However, based on the literature about racial diversity, the normalized racial diversity that is calculated by the proportion of different races is more reasonable. Therefore, a new variable named “normalized racial diversity” is added into the dataset.     
 
-
-## Methodology  
+# Methodology  
 \qquad According to the research question, the following things needs to be done: Data check, Conducting the initial EDA(exploratory data analysis), model check.  
-- To better measure the racial diversity, a new variable based on White/Black/Hispanic is created.  
-- In the initial EDA part, scatterplots and bubble plot are presented to show the rough corelationship between union density and vocational training to get the general idea of the question.   
-- Make transformation for linear regression model to see if the result turns to be more reasonable.  
-- Drawing the component residual plot(CR plot) to check every correlationship between independent variables and response variables.  
-- Partial corelation test has been used to check if there still exists significant negative relationship between two variables when control the other 7 confounding variables.    
-- Mediation analysis has been conducted to check if racial diverisity could be regarded as a intermediate influencing factor of union density and vocational training.  
-# Exploratory Data Analysis
+\qquad To better measure the racial diversity, a new variable based on White/Black/Hispanic is created.  
+\qquad In the initial EDA part, scatterplots and bubble plot are presented to show the rough corelationship between union density and vocational training to get the general idea of the question.   
+\qquad Make transformation for linear regression model to see if the result turns to be more reasonable.  
+\qquad Drawing the component residual plot(CR plot) to check every correlationship between independent variables and response variables.  
+\qquad Partial corelation test has been used to check if there still exists significant negative relationship between two variables when control the other 7 confounding variables.    
+\qquad Mediation analysis has been conducted to check if racial diverisity could be regarded as a intermediate influencing factor of union density and vocational training.  
 
+# Exploratory Data Analysis
 ```{r echo=FALSE, warning=FALSE,message=FALSE}
 ### Initial EDA 
 plot1 <-  ggplot(olddata3)+
   geom_point(aes(x=olddata3$Highschool,y=olddata3$Union_density))+
   geom_smooth(aes(x=olddata3$Highschool,y=olddata3$Union_density),se=FALSE)+
-  labs(x="Union Density",y="Highschool")
+  labs(x="Union Density",y="Vocational Education")
 plot1
 ```
 \qquad This plot visualizes the potential relationship with x-axis set as union density and y-axis set as vocational education. From this plot, no obvious negative relationship can be observed. 
 
 ```{r,echo = F}
-symbols(olddata3$Highschool,olddata3$Union_density,circles= olddata3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Highschool")
+symbols(olddata3$Highschool,olddata3$Union_density,circles= olddata3$norm_Racial_diversity/pi, inches=0.30, fg="white", bg="lightblue",xlab = "Union Density", ylab = "Vocational Education")
 ```
 \qquad Moreover, a bubble plot is presented. Same as former plot, setting union density as independent variable and high school as dependent variable, but this time replacing every spot with a single circle. Each circle represents for one state and the radius of circle stands for racial diversity level, which means, the higher racial diversity level, the larger circle is. Same as previous result, by observing this plot we could not confirm these two variables have a negative relationship.
 
+# Result
 
-Methodology and Result
-=========================
 ### Replicate Original Model
 \qquad Since the initial EDA does not show a distinctive pattern of the negative relationship between vocational training and unionization, which is different from the result provided by the model in the second-year paper, then a replication of the original model conducted to confirm the model result. 
-```{r,echo=FALSE}
-fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = olddata3)
-summary(fittest)
-```  
+
 
 ### Partial Correlation for Original Model
 \qquad Because there are other factors that will impact the outcome, partial correlation analysis is implemented to better investigate the relationship between union density, specifically and vocational education. Partial correlation is a measure of the strength and direction of a linear relationship between two continuous variables while controlling for the effect of others. In terms of the strength of relationship, the value of the correlation coefficient varies between $+1$ and $-1$. A value of $+1$ and $-1$ indicates a perfect degree of association between the two variables. As the correlation coefficient value goes towards $0$, the relationship between the two variables will be weaker.  
@@ -121,7 +117,6 @@ $n$ = number of observations
 
 Using the pearson method, the partial correlation is $-0.4167175$ and P-value is $0.002351165$, which suggests a moderate negative relationship between union density and vocational education.  
 
-
 ```{r,echo = F}
 partial.correlation_p = cor(residuals.high, residuals.Union, method = 'pearson')
 test.statistic_p = partial.correlation_p*sqrt((n-2)/(1-partial.correlation_p^2))
@@ -137,7 +132,10 @@ p.value_s = 2*pt(abs(test.statistic_s), n-2, lower.tail = F)
 ```  
 \qquad From the output of two methods, correlations between union density and vocational education are negative. The small P-value (<0.05) indicates that the negative coefficient of Union density is statistically significant in the primary model, it means here that it's not equal to 0, so it suggests that the variables are related. From the plot for residual of Union density and residual of Highschool, the red line, which represents the relationship between union density and vocational education, has an apparent downward trend. However, by looking at the points on the graph, there exist leverage point in the lower right corner. Therefore, some data transformation might be needed.
 
+
+### Linear Regression Assumptions and Diagnostics
 ```{r,echo = F}
+fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = olddata3)
 par(mfrow=c(2,2))
 plot(fittest,which=1)
 plot(fittest,which=2)
@@ -145,30 +143,27 @@ plot(fittest,which=3)
 ```
 \qquad The plots above are used to check the assumptions of Linear Regression. These assumptions are linearity assumption, normality assumption, and constant variance assumption. The first plot shown here is Residuals vs Fitted plot which is used to check linearity assumption. Ans ideal plot should show the equally spread residuals around the horizontal line without any distinct patterns. The plot above indicates the violation of the linearity assumption. The normality assumption can be checked by the Q-Q plot. The ideal plot of residuals should approximately follow a straight line. Some points are skewed at the top right of the plot which indicates the violation of normality assumption. The third plot, which is a scale-location plot can be used to detect the assumption of equal variance. An ideal plot will show a horizontal line with randomly spread points. In our case, the constant variance assumption is violated. If the assumptions of Linear Regression are not met, it indicates that a transformation in the linear regression is required.
 
-```{r}
-#check the component residual plot(also called partial residual plot)
+
+### Component Residual plot
+```{r,echo = F}
 crPlots(fittest)
 ```  
+The Component Residual plot are used to show the relationship between independent variable and dependent variable given other independent are also in the linear model. Component Residual plot are used here to determine which variable will be used to do the log transformation to remedy the violation of linear assumption. We will take the log transformation will be used on GDP, Population,Export,Cost_of_living.
 
-
-Transformation
-==================
-- Use CrPlots to determin which variable to take log transformation
-- Model validation
+### Transformation
+\qquad Model validation
 
 ```{r,echo = F}
 fit1<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = olddata3)
-summary(fit1)
-crPlots(fit1)
-par(mfrow=c(2,2))
-plot(fit1,which=1)
-plot(fit1,which=2)
-plot(fit1,which=3)
+summ(fit1)
 ```  
 
 \qquad Because the original model does not in line with the assumption, data transformation is used to adjust the model. To use the linear regression model, the most significant assumption is that variables should be in the linear relationship with the outcome. Component residual plot is used to measure if every variable satisfies linearity assumption. The red line shows the pattern of the datapoints included in every variable, and the dashed line indicates the best of the fit. If the red line is close to the dashed line and does not show curve pattern, meaning that the linearity assumption is satisfied for that variable. Based on the initial component residual plot of the original model, leverage points exist in datapoints from different variables including “GDP”, “population”, “Export”, “unemployment rate” and “cost of living”. There are issues with leverage points since it would directly change the pattern of the residual plots. For example, looking at the residual plots of “Export”, if the leverage points move upwards or downwards, the red line and the dashed line would move accordingly. The movement is not caused by the movement of the most datapoints, rather caused by the leverage points, which is not the ideal case where the red line should indicate the pattern of the majority of datapoints. To avoid the leverage points, log transformation is used to build the first model, “fit1”. 
 In model “fit1”, log transformation has been implemented for the outcome, “highschool” and variables that have leverage points, “GDP”, “population”, “Export”, “unemployment rate” and “cost of living”. After summarizing the model “fit1”, the coefficient between the outcome “highschool” and the variable “union density” is -0.04, not significant. Because the dataset is a sample from the population, coefficient for each sample would be different because of the sampling bias arising from picking up different samples within the population. The insignificant coefficient indicates that the negative relationship between vocational training and union density is not conclusive.
 
+```{r,echo = F}
+crPlots(fit1)
+```
 
 \qquad After modeling, residual plots are generated to check the validation of the model. Looking at the residual plot, nearly all the residuals are equally distributed within the horizontal line valued at zero, indicating that the residuals are random, and the linearity assumption is satisfied. Looking at the Q-Q plot, majority of the residual points are aligned with the straight line, indicating the normality assumption is nearly satisfied. Looking at the scale-location plot, most residues are spread equally along the ranges of predictors, indicating the equal variance assumption is satisfied. Based on the residual plot, the model “fit1” is more valid compared to the original model. Check the component and residual plot again, the issue regarding the leverage points have been improved a lot. But two issues still have to be considered. First, there is a leverage point in GDP after taking log transformation. Second, the variable of union density slightly shows a curved pattern, indicating that linear assumption is not well satisfied, and a more robust model might be considered.
 
@@ -176,12 +171,7 @@ In model “fit1”, log transformation has been implemented for the outcome, �
 olddata4 <-olddata3 %>% 
   filter(GDP<100000)
 fit2<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini,data = olddata4)
-summary(fit2)
-crPlots(fit2)
-par(mfrow=c(2,2))
-plot(fit2,which=1)
-plot(fit2,which=2)
-plot(fit2,which=3)
+summ(fit2)
 ```
 
 \qquad To deal with the leverage point in log GDP, one of the solutions is to leave it out. The leverage point is Washington DC with highest log GDP. Another model (fit2) with exactly same variables and outcome is created with a new dataset excluding datapoint of Washington DC. After summarizing the model “fit2”, the coefficient of union density changes 20%, indicating the difference is not ignorable.Thus, the leverage point of Washington DC cannot be simply leaved out.  
@@ -218,8 +208,8 @@ p.value.t_s = 2*pt(abs(test.statistic.t_s), n-2, lower.tail = F)
 \qquad Based on the output from two methods, the partial correlation coefficient between Union density and Vocational training are smaller, and P-values are larger. Thus, in the transformed model, the negative relationship between the two union density and vocational training is not as strong as it in the original model.  
 
 
-Adding Racial Diversity
-========================
+### Adding Racial Diversity
+
 \qquad To analyze if racial diversity can explain the relationship, the next model adds racial diversity as another confounding variable and check if there is any difference on the coefficients. 
 
 \qquad As mentioned before, rather than using the single proportion of Black, White, and Hispanic people, a new variable named normalized racial diversity is used based on the article “How to Measure Density When You Must”(David V. Budescu, 2012). For obtaining the racial diversity, first of all, calculating the proportion of same race, which equals to the sum of Black square, White square, and Hispanic square, then using one minus the proportion of same race to get the proportion of different race. To alleviate this kind of problem that can arise when modeling, racial diversity needs to be normalized before adding to the model. Times the radical diversity by C/(C-1) can get the normalized racial diversity, C means the total type of race. In this case, C is 3.
@@ -229,11 +219,7 @@ $$NormRacialDiversity = \frac{C}{C-1}*Racial Diversity$$
 
 ```{r,echo = F}
 fit3<-lm(log(Highschool) ~ Union_density+log(GDP)+Urbanity+log(Population)+log(Export)+Unemployment_rate+log(Cost_of_living)+Gini + norm_Racial_diversity,data = olddata3)
-summary(fit3)
-par(mfrow=c(2,2))
-plot(fit3,which=1)
-plot(fit3,which=2)
-plot(fit3,which=3)
+summ(fit3)
 ```  
 
 \qquad The plots of adding the normalized racial diversity model are similar to the transformed model; the only change is that adjusted R-squared increases a little bit, from 0.7202 to 0.7503, meaning that this model captures more information from the dataset. R-squared is the proportion of variance explained by the model. High R-squared means the model captures all the variation in the outcome. The adjusted R-squared is a modified version of R-squared and increases only if the new term improves model more than would be expected by chance. Therefore, after adding normalized racial diversity, the new model fits better than the transformed model.  
@@ -269,15 +255,15 @@ p.value.f_p = 2*pt(abs(test.statistic.f_p), n-2, lower.tail = F)
 ```  
 \qquad Then, from the output of different methods, the partial correlations between Union density and Vocational training are close to zero, and P-values (>0.05) are quite large, which indicates this relationship between these two factors is not statistically significant. Therefore, it cannot conclude the correlations are different from zero, which suggests there may not be a relationship between union density and vocational training.  
 
-Pa
+# Conclusion
 
-Conclusion
-===============
 \qquad To summarize the results, two findings are found based on the research question. First, there is no significant relationship  between union density and vocational education. Second, the racial diversity changes the results of linear model to some extent. But for the question of if the racial diversity explains the relationship, no conclusion can be generalized.  
 
-**Part Two**
+# Part Two
 
-**Data Descriptions: **    
+# Dataset interpretation 
+
+### Data Description:    
 
 Variable Name                    | Interpretation                          | Time Span    
 -------------------------------- | --------------------------------------- | ----------------------
@@ -290,10 +276,9 @@ Racial(black/hispanic/white)     | Racial proportion for each race         | 200
 Totalpop                         | Total population                        | 2009-2017
 Studentpop                       | Student population                      | 2009-2017
 
-**Data Governance: **  
+### Data Governance: 
 -	Missing data. Looking into the second dataset, values for some variables between 2005 and 2009 are missing. Therefore, data from 2009 to 2017 are used for model fitting.   
 -	Because the urbanity only has data at the year of 2010, the same value is applied to every single year analysis.   
-
 
 
 ```{r,include=FALSE}
@@ -312,38 +297,29 @@ newdata3 = newdata3 %>%
   mutate(norm_Racial_diversity = Racial_diversity *(3/2))
 ```
 
-Methodology and Result
-=========================
+# Methodology and Result
 
 ## One Year Model (2010)
 ```{r,echo = F}
 newdata2 <- filter(newdata3, Year ==2010)
-fit1 = lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = newdata2)
-summary(fit1)
-par(mfrow=c(2,2))
-plot(fit1)
-crPlots(fit1)
+newfit1 = lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = newdata2)
 ```
-\qquad Model1 is the linear regression of vocational education concentrator on union denisty, Urbanity, Unemployment rate, GDP per Capita and population. Based on the disgnotsic plots, the assumptions of linear regression are violated. Log transformation on the outcome and predictors will be used in here.
+\qquad The first linear model is the regression of vocational education concentrator on union density, Urbanity, Unemployment rate, GDP per Capita and total population on the Year 2010. Because the urbanity only has data at the year of 2010, we want to do a linear regression on the correct data first before fitting using repeated urbanity for years. Based on the diagnostic plots from the appendix, the assumptions of linear regression are violated. Log transformation on the outcome and predictors will be used here. Based on the Component Residual plot, log transformation will be used on GDP_Per_Capita, Total population.
+
+### Transformation
 
 ```{r,echo = F}
-fit2 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata2)
-summary(fit2)
-par(mfrow=c(2,2))
-plot(fit2)
-crPlots(fit2)
+newfit2 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata2)
+summ(newfit2)
 ```  
-\qquad Model2 is built based on the transformed model. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model,  the p-value of union density still large and the coefficient of union density is closed to 0.
+\qquad Model2 is built based on the transformed model. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model, the p-value of union density still large and the coefficient of union density is closed to 0.
 
 ### Adding Racial Diversity
-```{r,echo = F}
-fit3 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop) + norm_Racial_diversity,data = newdata2)
-summary(fit3)
-par(mfrow=c(2,2))
-plot(fit3)
-crPlots(fit3)
-```  
 
+```{r,echo = F}
+newfit3 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop) + norm_Racial_diversity,data = newdata2)
+summ(newfit3)
+```  
 \qquad Model3 is built based on the transformed model and it considers the normalized racial diversity. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model,  the p-value of union density still large and the coefficient of union density is closed to 0. Racial diversity seems not able to explain the negative relationship between union diversity and vocational training.  
 
 ### Mediation Analysis
@@ -354,38 +330,36 @@ To interpret the results of mediation analysis, the ACME stands for mediation ef
 model.tm1 <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=newdata2)
 model.ty1 <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data=newdata2)
 out.1 <- mediate(model.tm1,model.ty1,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
-summary(out.1)
+summ(out.1)
 plot(out.1)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
 \qquad Based on the summarized results of mediation analysis using the data on 2010, the direct effect is -0.02, which is not significant, indicating that union density and vocational training does not have strong relationship. Furthermore, the estimate for mediation effect is 0.002, which is very close to 0, indicating that there is nearly no mediation effect. The proportion of mediation effects is -0.02. Looking at the plot, a large portion of the total effect is caused by direct effect, and the mediation effect is around zero, which corresponds to the  prop.mediated result at -0.02 (2%).
-
 
 ## All Years Model(2009 - 2017)
  
 \qquad The data set, which is used to build all the years model, only includes the data from 2009 to 2017. Since in the raw data set, there is some missing value from 2003 to 2008. And due to the new data only have one measurement for urbanity, so this model is assuming that for all the years, urbanity is the same.  
 
 ```{r,echo=F}
-fit4 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data = newdata3)
-summary(fit4)
+newfit4 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data = newdata3)
+summ(newfit4)
 ```
 
 \qquad Compared the all the year model and one year model, the coefficient of union density does not change a lot, -0.02 means every 1 unit increases on Union density, the Voe expect to decrease 2%. The coefficient of 2009 is the intercept, and the c of 2010 indicates the Voe in 2012 is 0.058 unit higher than the Voe coefficients in 2009; the coefficient of 2011 means the Voe in 2012 is 0.18 unit lower than the Voe on 2009; and so on.  
 
+### Linear Regression Assumptions and Diagnostics and Component Residual Plot
 ```{r, echo=F}
 par(mfrow=c(2,2))
-plot(fit4)
-crPlots(fit4)
+plot(newfit4)
+crPlots(newfit4)
 ```  
 
 \qquad By checking the QQ plot, there is one outlier in the lower left, and it was the data for Louisiana in 2010. However, it is unreasonable to remove one year data of one state, so this outlier still exists in the following model.  
 
 ### Adding Racial Diversity
 ```{r,echo=FALSE}
-fit5 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
-summary(fit5)
-par(mfrow=c(2,2))
-plot(fit5)
+newfit5 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
+summ(newfit5)
 ```  
 
 \qquad After adding the normalized racial diversity in the all year model, the coefficient of union density only decreases 0.02, and the four plots of the model are similar to the previous model. Therefore, it is hard to say that racial diversity can explain the negative relationship between union density and Voe.  
@@ -396,7 +370,7 @@ plot(fit5)
 model.tm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=newdata3)
 model.ty <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data=newdata3)
 out.2 <- mediate(model.tm,model.ty,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
-summary(out.2)
+summ(out.2)
 plot(out.2)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
@@ -404,10 +378,8 @@ plot(out.2)
 
 ## Replace Population by Student Population
 ```{r,echo=FALSE}
-fit6 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity+factor(Year),data = newdata3)
-summary(fit6)
-par(mfrow=c(2,2))
-plot(fit6)
+newfit6 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+ norm_Racial_diversity+factor(Year),data = newdata3)
+summ(newfit6)
 ```  
 
 \qquad The dataset contains total population and student population. In order to see how population change could influence the result, replace the total population with student population and add normalized racial diversity into the model6. While, the result does not change much compared with model4. Cr plots do not show much change either so the conclusion is same as the former one.  
@@ -418,7 +390,7 @@ plot(fit6)
 model.sm <- lm(norm_Racial_diversity~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=newdata3)
 model.sy <- lm(log(Voe)~Union+norm_Racial_diversity+Urbanity+Unemployment+log(GDP_Per_Capita)+log(StudentpopE)+factor(Year),data=newdata3)
 out.3 <- mediate(model.sm,model.sy,sims=1000,treat = "Union",mediator = "norm_Racial_diversity")
-summary(out.3)
+summ(out.3)
 plot(out.3)
 #In this case, we find the racial diversity does not have a mediation effect.
 ```
@@ -430,10 +402,8 @@ plot(out.3)
 
 ```{r,echo=FALSE}
 newdata4 <- filter(newdata3, State!="District of Columbia")
-fit7 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data = newdata4)
-summary(fit7)
-par(mfrow=c(2,2))
-plot(fit7)
+newfit7 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+factor(Year),data = newdata4)
+summ(newfit7)
 ```  
 
 \qquad After removing DC, the plot of residuals vs. leverage improved. However, the QQ plot and residual plot are not changed a lot, and the coefficient of union density decreases a little bit. These outputs indicate that removing leverage points will not affect the model and relationship between union density and Voe.  
@@ -441,15 +411,94 @@ plot(fit7)
 ## Remove Urbanity  
 
 ```{r,echo=FALSE}
-fit8 = lm(log(Voe) ~ Union+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
-summary(fit8)
-par(mfrow=c(2,2))
-plot(fit8)
+newfit8 = lm(log(Voe) ~ Union+Unemployment+log(GDP_Per_Capita)+log(Totalpop)+ norm_Racial_diversity+factor(Year),data = newdata3)
+summ(newfit8)
 ```     
 
 \qquad The issue exists in dataset that it uses 2010 urbanity value stands for all years’ value and it is acknowledged that urbanity doesn’t have to be included in the model, so model8 removes urbanity, while it turns out to be same result and conclusion as before.    
 
-Conclusion  
-=============
-* According to series of models built above, there is no evidence to say racial diversity explains relationship between vocational training and union density.     
-* These models are based on the dataset which mainly includes union density, GDP per capita, and other seven independent variables. There could be other factors which influence the vocation training level, so it might turn out to be different result when other factors are considered in model.   
+# Conclusion  
+
+\qquad According to series of models built above, there is no evidence to say racial diversity explains relationship between vocational training and union density.     
+\qquad These models are based on the dataset which mainly includes union density, GDP per capita, and other seven independent variables. There could be other factors which influence the vocation training level, so it might turn out to be different result when other factors are considered in model.   
+
+
+# Appendix
+
+## Part1: Replicate orignal model
+```{r,echo=F}
+fittest<-lm(Highschool~Union_density+GDP+Urbanity+Population+Export+Unemployment_rate+Cost_of_living+Gini,data = olddata3)
+summ(fittest)
+```  
+
+## Part1: Assumption check of transformed model
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(fit1,which=1)
+plot(fit1,which=2)
+plot(fit1,which=3)
+```
+
+## Part1: Assumption plot and crplot when remove dc
+```{r,echo=F}
+crPlots(fit2)
+par(mfrow=c(2,2))
+plot(fit2,which=1)
+plot(fit2,which=2)
+plot(fit2,which=3)
+```
+
+## Part1: Add racial diveristy
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(fit3,which=1)
+plot(fit3,which=2)
+plot(fit3,which=3)
+```
+
+## Part2: year 2010
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit1)
+crPlots(newfit1)
+```
+
+
+## Part2: transformed year 2010
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit2)
+crPlots(newfit2)
+```
+
+## Part2: transformed year 2010 and add racial diveristy
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit3)
+crPlots(newfit3)
+```
+
+## Part2: transformed all year and add racial diveristy
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit5)
+```
+
+## Part2: student pop 
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit6)
+```
+
+## Part2: remove dc
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit7)
+```
+
+## Part2: remove urbanity
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(newfit8)
+```
+
