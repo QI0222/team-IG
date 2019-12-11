@@ -312,7 +312,7 @@ newfit1 = lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = newd
 newfit2 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata2)
 summ(newfit2)
 ```  
-\qquad Model2 is built based on the transformed model. Although the residual plot and QQ-plot shows the residuals are normally distributed in this model, the p-value of union density still large and the coefficient of union density is closed to 0.
+\qquad Model2 is built based on the transformed model. The diagnostic plots in the appendix showing that the assumptions are met. We do not have enough evidence to reject there is no relationship between vocational education concentrator and union density based on the P-value.
 
 ### Adding Racial Diversity
 
