@@ -1,7 +1,7 @@
 ---
 title: "Report"
 author: "Team IG"
-subtitle: "Qi, Xinci, Yiru, Shicheng"
+subtitle: "Qi, Xinci, Yiru, Shicheng, Kelly"
 date: "12/09/2019"
 output:
   pdf_document: default
