@@ -276,7 +276,7 @@ Urbanity                         | Quality of being urban in each state    | 201
 Unemployment                     | Unemployment rate in each state         | 2009-2017
 GDP_Per_Capital                  | GDP/Population number                   | 2005-2017
 Union                            | Union degree for each state             | 2005-2017
-Voe                              | Quantity of vocational training people  | 2007-2017
+Voe                              | Vocational training concentrators       | 2007-2017
 Racial(black/hispanic/white)     | Racial proportion for each race         | 2005-2017
 Totalpop                         | Total population                        | 2009-2017
 Studentpop                       | Student population                      | 2009-2017
@@ -293,16 +293,18 @@ This first part of this section includes a series of models based on data for 20
 ```{r,echo = F}
 newdata2 <- filter(newdata3, Year ==2010)
 newfit1 = lm(Voe~Union+Urbanity+Unemployment+GDP_Per_Capita+Totalpop,data = newdata2)
+summ(newfit1)
 ```
-
-The first linear model is the regression of vocational education concentrator on union density, Urbanity, Unemployment rate, GDP per Capita and Total Population on the year 2010. Because the urbanity only has data at the year of 2010, we want to do a linear regression on the correct data first before fitting repeated urbanity data. Based on the diagnostic plots from the appendix, the assumptions of linear regression are violated. Log transformation on the outcome and predictors will be used here.
+The first linear model is the regression of vocational education concentrator on union density, Urbanity, Unemployment rate, GDP per Capita and Total Population on the year 2010. Because the urbanity only has data at the year of 2010, we want to do a linear regression on the correct data first before fitting repeated urbanity data. From first model summary, the coefficient of intercept is 208754.90 which means a state level’s vocation education level should be 208754.90 when this state’s union density, urbanity, unemployment, GDP per capita and total population are all valued 0. The coefficient of variable union is -6044.25 which means a unit increase in union density results in an increase in average vocational education level decrease by -6044.25, all other variables held constant.Based on the diagnostic plots from the appendix, the assumptions of linear regression are violated. Log transformation on the outcome and predictors will be used here. 
 
 ### 4.2.2 Model II:Model I Transformation
 ```{r,echo = F}
 newfit2 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop),data = newdata2)
 summ(newfit2)
 ```  
-Model two is built based on the transformed model. The diagnostic plots in the appendix show that the assumptions are met. We do not have enough evidence to reject that there is no relationship between vocational education concentrator and union density based on the P-value(>0.05).
+Model two is built based on the transformed model. 
+
+This model should be interpreted on the log scale. The coefficient of intercept is 2.65 which means a state level’s vocation education level should be $$exp(2.65)$$ when this state’s union density, urbanity, unemployment, GDP per capita and total population are all valued 0. The coefficient of variable union is -0.02 which means a unit increase in union density results in a 2% decrease in average vocational education level, all other variables held constant. The coefficient of total pop is 1.01 which means a 1% increase in total population results in a 1.01% increase in average vocational education. The diagnostic plots in the appendix show that the assumptions are met. We do not have enough evidence to reject that there is no relationship between vocational education concentrator and union density based on the P-value(>0.05). 
 
 
 ### 4.2.3 Model III:Model II Add Racial Diversity
@@ -310,7 +312,7 @@ Model two is built based on the transformed model. The diagnostic plots in the a
 newfit3 = lm(log(Voe)~Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Totalpop) + norm_Racial_diversity,data = newdata2)
 summ(newfit3)
 ```  
-Model three is built based on the transformed model adding normalized racial diversity. From the summary of this model, the P-value of union density is still large and the coefficient of union density is close to 0. Racial diversity is  unable to explain the negative relationship between union diversity and vocational training.  
+Model three is built based on the transformed model adding normalized racial diversity. From the summary of this model, the P-value of union density is still large and the coefficient of union density is close to 0. The interpretation should follow same rule as models above. Racial diversity is  unable to explain the negative relationship between union diversity and vocational training.  
 
 
 ### 4.2.4 Mediation Analysis on Model III
