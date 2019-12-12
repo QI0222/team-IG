@@ -304,7 +304,7 @@ summ(newfit2)
 ```  
 Model two is built based on the transformed model. 
 
-This model should be interpreted on the log scale. The coefficient of intercept is 2.65 which means a state level’s vocation education level should be $$exp(2.65)$$ when this state’s union density, urbanity, unemployment, GDP per capita and total population are all valued 0. The coefficient of variable union is -0.02 which means a unit increase in union density results in a 2% decrease in average vocational education level, all other variables held constant. The coefficient of total pop is 1.01 which means a 1% increase in total population results in a 1.01% increase in average vocational education. The diagnostic plots in the appendix show that the assumptions are met. We do not have enough evidence to reject that there is no relationship between vocational education concentrator and union density based on the P-value(>0.05). 
+This model should be interpreted on the log scale. The coefficient of intercept is 2.65 which means a state level’s vocation education level should be $$\exp(2.65)$$ when this state’s union density, urbanity, unemployment, GDP per capita and total population are all valued 0. The coefficient of variable union is -0.02 which means a unit increase in union density results in a 2% decrease in average vocational education level, all other variables held constant. The coefficient of total pop is 1.01 which means a 1% increase in total population results in a 1.01% increase in average vocational education. The diagnostic plots in the appendix show that the assumptions are met. We do not have enough evidence to reject that there is no relationship between vocational education concentrator and union density based on the P-value(>0.05). 
 
 
 ### 4.2.3 Model III:Model II Add Racial Diversity
@@ -339,7 +339,7 @@ newfit4 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Tota
 summ(newfit4)
 ```
 
-Model four is the model using data from 2009 to 2017. The coefficient of union density is -0.04, which means every 1 unit increases on union density, the Voe expect to decrease 4% $$exp(-0.04)$$. The coefficients of different year factor is the added on value for coefficients for each variables, setting the year of 2009 as a baseline. For example, the coefficient of union density at the year of 2009 is -0.04, and the coefficient of union density at the year of 2010 is -0.02 (-0.04 + 0.02).
+Model four is the model using data from 2009 to 2017. The coefficient of union density is -0.04, which means every 1 unit increases on union density, the Voe expect to decrease 4% $$\exp(-0.04)$$. The coefficients of different year factor is the added on value for coefficients for each variables, setting the year of 2009 as a baseline. For example, the coefficient of union density at the year of 2009 is -0.04, and the coefficient of union density at the year of 2010 is -0.02 (-0.04 + 0.02).
 
 By checking the QQ plot in Appendix, there is one outlier in the lower left, and it is the data for Louisiana in 2010. However, it is unreasonable to remove one year data of one state, so we keep it in the following model.
 
@@ -351,7 +351,7 @@ newfit5 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Tota
 summ(newfit5)
 ```  
 
-After adding the normalized racial diversity to model 4. Therefore, it is hard to say that racial diversity can explain the negative relationship between union density and Voe.  
+After adding the normalized racial diversity to model 4, it is hard to say that racial diversity can explain the negative relationship between union density and Voe.  
 
 ### 4.2.7 Mediation Analysis on Model V
 
@@ -373,7 +373,7 @@ newfit6 = lm(log(Voe) ~ Union+Urbanity+Unemployment+log(GDP_Per_Capita)+log(Stud
 summ(newfit6)
 ```
 
-The dataset contains total population and student population. Because the client wants to know how the student population would influence the results, we with the total population to student population. However, the interpretation of the results would be different. The research question is now targeting to the proportion of students taking vocational education from the total student population rather than the state population. The coefficient of union density is -0.04, which means every 1 unit increases on union density, the VoE expect to decrease 4% $$exp(-0.04)$$.
+The dataset contains total population and student population. Because the client wants to know how the student population would influence the results, we with the total population to student population. However, the interpretation of the results would be different. The research question is now targeting to the proportion of students taking vocational education from the total student population rather than the state population. The coefficient of union density is -0.04, which means every 1 unit increases on union density, the VoE expect to decrease 4% $$\exp(-0.04)$$.
  
 ### 4.2.9 Mediation Analysis on Model VI
 
