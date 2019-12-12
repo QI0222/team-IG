@@ -4,7 +4,7 @@ author: "Team IG"
 subtitle: "Qi Huang, Xinci Chen, Yiru Fei, Shicheng Wang, Kelly Kung"
 date: "12/11/2019"
 output:
-  html_document: default
+  output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +17,7 @@ pacman::p_load(readxl,dplyr,tidyverse,ggplot2,plotly,ggpubr,MASS,fitdistrplus,me
 
 ```{r,include=FALSE}
 # data for part1
-olddata<-read_excel("~/Desktop/Consulting/team-IG/Data for the Final Project.xlsx")
+olddata<-read_excel("Data for the Final Project.xlsx")
 olddata<-as_tibble(olddata)
 #select variables that needed for the project and rename some variables
 olddata2 <- olddata %>% 
@@ -250,7 +250,7 @@ To summarize the results, two findings are found based on the research question.
 # 4.Part II
 
 ```{r,include=FALSE}
-newdata<-read_csv("~/Desktop/Consulting/team-IG/new data.csv")
+newdata<-read_csv("new data.csv")
 newdata = na.omit(newdata)
 newdata = newdata[-c(10,12,14,17,19)]
 newdata = newdata%>% 
